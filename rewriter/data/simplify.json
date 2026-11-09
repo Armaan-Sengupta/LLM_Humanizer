@@ -1,0 +1,2119 @@
+{
+ "a number of": {
+  "omit": false,
+  "replace": [
+   "many",
+   "some"
+  ]
+ },
+ "abundance": {
+  "omit": false,
+  "replace": [
+   "enough",
+   "plenty"
+  ]
+ },
+ "accede to": {
+  "omit": false,
+  "replace": [
+   "agree to",
+   "allow"
+  ]
+ },
+ "accelerate": {
+  "omit": false,
+  "replace": [
+   "speed up"
+  ]
+ },
+ "accentuate": {
+  "omit": false,
+  "replace": [
+   "stress"
+  ]
+ },
+ "accompany": {
+  "omit": false,
+  "replace": [
+   "go with",
+   "with"
+  ]
+ },
+ "accomplish": {
+  "omit": false,
+  "replace": [
+   "carry out",
+   "do"
+  ]
+ },
+ "accorded": {
+  "omit": false,
+  "replace": [
+   "given"
+  ]
+ },
+ "accordingly": {
+  "omit": false,
+  "replace": [
+   "so"
+  ]
+ },
+ "accrue": {
+  "omit": false,
+  "replace": [
+   "add",
+   "gain"
+  ]
+ },
+ "accurate": {
+  "omit": false,
+  "replace": [
+   "correct",
+   "exact",
+   "right"
+  ]
+ },
+ "acquiesce": {
+  "omit": false,
+  "replace": [
+   "agree"
+  ]
+ },
+ "acquire": {
+  "omit": false,
+  "replace": [
+   "get"
+  ]
+ },
+ "additional": {
+  "omit": false,
+  "replace": [
+   "added",
+   "extra",
+   "more",
+   "other"
+  ]
+ },
+ "address": {
+  "omit": false,
+  "replace": [
+   "discuss"
+  ]
+ },
+ "addressees": {
+  "omit": false,
+  "replace": [
+   "you"
+  ]
+ },
+ "addressees are requested": {
+  "omit": true,
+  "replace": [
+   "please"
+  ]
+ },
+ "adjacent to": {
+  "omit": false,
+  "replace": [
+   "next to"
+  ]
+ },
+ "adjustment": {
+  "omit": false,
+  "replace": [
+   "change"
+  ]
+ },
+ "admissible": {
+  "omit": false,
+  "replace": [
+   "accepted",
+   "allowed"
+  ]
+ },
+ "advantageous": {
+  "omit": false,
+  "replace": [
+   "helpful"
+  ]
+ },
+ "adversely impact": {
+  "omit": false,
+  "replace": [
+   "hurt"
+  ]
+ },
+ "adversely impact on": {
+  "omit": false,
+  "replace": [
+   "hurt",
+   "set back"
+  ]
+ },
+ "advise": {
+  "omit": false,
+  "replace": [
+   "recommend",
+   "tell"
+  ]
+ },
+ "afford an opportunity": {
+  "omit": false,
+  "replace": [
+   "allow",
+   "let"
+  ]
+ },
+ "aforementioned": {
+  "omit": false,
+  "replace": [
+   "remove"
+  ]
+ },
+ "aggregate": {
+  "omit": false,
+  "replace": [
+   "add",
+   "total"
+  ]
+ },
+ "aircraft": {
+  "omit": false,
+  "replace": [
+   "plane"
+  ]
+ },
+ "all of": {
+  "omit": false,
+  "replace": [
+   "all"
+  ]
+ },
+ "alleviate": {
+  "omit": false,
+  "replace": [
+   "ease",
+   "reduce"
+  ]
+ },
+ "allocate": {
+  "omit": false,
+  "replace": [
+   "divide"
+  ]
+ },
+ "along the lines of": {
+  "omit": false,
+  "replace": [
+   "as in",
+   "like"
+  ]
+ },
+ "already existing": {
+  "omit": false,
+  "replace": [
+   "existing"
+  ]
+ },
+ "alternatively": {
+  "omit": false,
+  "replace": [
+   "or"
+  ]
+ },
+ "ameliorate": {
+  "omit": false,
+  "replace": [
+   "help",
+   "improve"
+  ]
+ },
+ "and/or": {
+  "omit": false,
+  "replace": [
+   "\u2026 or \u2026 or both"
+  ]
+ },
+ "anticipate": {
+  "omit": false,
+  "replace": [
+   "expect"
+  ]
+ },
+ "apparent": {
+  "omit": false,
+  "replace": [
+   "clear",
+   "plain"
+  ]
+ },
+ "appreciable": {
+  "omit": false,
+  "replace": [
+   "many"
+  ]
+ },
+ "appropriate": {
+  "omit": true,
+  "replace": [
+   "proper",
+   "right"
+  ]
+ },
+ "approximate": {
+  "omit": false,
+  "replace": [
+   "about"
+  ]
+ },
+ "arrive onboard": {
+  "omit": false,
+  "replace": [
+   "arrive"
+  ]
+ },
+ "as a means of": {
+  "omit": false,
+  "replace": [
+   "to"
+  ]
+ },
+ "as of yet": {
+  "omit": false,
+  "replace": [
+   "yet"
+  ]
+ },
+ "as prescribed by": {
+  "omit": false,
+  "replace": [
+   "in"
+  ]
+ },
+ "as to": {
+  "omit": false,
+  "replace": [
+   "about",
+   "on"
+  ]
+ },
+ "as yet": {
+  "omit": false,
+  "replace": [
+   "yet"
+  ]
+ },
+ "ascertain": {
+  "omit": false,
+  "replace": [
+   "find out",
+   "learn"
+  ]
+ },
+ "assist": {
+  "omit": false,
+  "replace": [
+   "aid",
+   "help"
+  ]
+ },
+ "assistance": {
+  "omit": false,
+  "replace": [
+   "aid",
+   "help"
+  ]
+ },
+ "at the present time": {
+  "omit": false,
+  "replace": [
+   "at present"
+  ]
+ },
+ "at this time": {
+  "omit": false,
+  "replace": [
+   "now"
+  ]
+ },
+ "attain": {
+  "omit": false,
+  "replace": [
+   "meet"
+  ]
+ },
+ "attempt": {
+  "omit": false,
+  "replace": [
+   "try"
+  ]
+ },
+ "attributable to": {
+  "omit": false,
+  "replace": [
+   "because"
+  ]
+ },
+ "authorise": {
+  "omit": false,
+  "replace": [
+   "allow",
+   "let"
+  ]
+ },
+ "authorize": {
+  "omit": false,
+  "replace": [
+   "allow",
+   "let"
+  ]
+ },
+ "be advised": {
+  "omit": true,
+  "replace": []
+ },
+ "because of the fact that": {
+  "omit": false,
+  "replace": [
+   "because"
+  ]
+ },
+ "belated": {
+  "omit": false,
+  "replace": [
+   "late"
+  ]
+ },
+ "benefit": {
+  "omit": false,
+  "replace": [
+   "help"
+  ]
+ },
+ "benefit from": {
+  "omit": false,
+  "replace": [
+   "enjoy"
+  ]
+ },
+ "bestow": {
+  "omit": false,
+  "replace": [
+   "award",
+   "give"
+  ]
+ },
+ "by means of": {
+  "omit": false,
+  "replace": [
+   "by",
+   "with"
+  ]
+ },
+ "by virtue of": {
+  "omit": false,
+  "replace": [
+   "by",
+   "under"
+  ]
+ },
+ "capability": {
+  "omit": false,
+  "replace": [
+   "ability"
+  ]
+ },
+ "caveat": {
+  "omit": false,
+  "replace": [
+   "warning"
+  ]
+ },
+ "cease": {
+  "omit": false,
+  "replace": [
+   "stop"
+  ]
+ },
+ "close proximity": {
+  "omit": false,
+  "replace": [
+   "near"
+  ]
+ },
+ "combat environment": {
+  "omit": false,
+  "replace": [
+   "combat"
+  ]
+ },
+ "combined": {
+  "omit": false,
+  "replace": [
+   "joint"
+  ]
+ },
+ "commence": {
+  "omit": false,
+  "replace": [
+   "begin",
+   "start"
+  ]
+ },
+ "comply with": {
+  "omit": false,
+  "replace": [
+   "follow"
+  ]
+ },
+ "component": {
+  "omit": false,
+  "replace": [
+   "part"
+  ]
+ },
+ "comprise": {
+  "omit": false,
+  "replace": [
+   "form",
+   "include",
+   "make up"
+  ]
+ },
+ "concerning": {
+  "omit": false,
+  "replace": [
+   "about",
+   "on"
+  ]
+ },
+ "consequently": {
+  "omit": false,
+  "replace": [
+   "so"
+  ]
+ },
+ "consolidate": {
+  "omit": false,
+  "replace": [
+   "combine",
+   "join",
+   "merge"
+  ]
+ },
+ "constitutes": {
+  "omit": false,
+  "replace": [
+   "forms",
+   "is",
+   "makes up"
+  ]
+ },
+ "contains": {
+  "omit": false,
+  "replace": [
+   "has"
+  ]
+ },
+ "convene": {
+  "omit": false,
+  "replace": [
+   "meet"
+  ]
+ },
+ "currently": {
+  "omit": true,
+  "replace": [
+   "now"
+  ]
+ },
+ "deem": {
+  "omit": false,
+  "replace": [
+   "believe",
+   "consider",
+   "think"
+  ]
+ },
+ "delete": {
+  "omit": false,
+  "replace": [
+   "cut",
+   "drop"
+  ]
+ },
+ "demonstrate": {
+  "omit": false,
+  "replace": [
+   "prove",
+   "show"
+  ]
+ },
+ "depart": {
+  "omit": false,
+  "replace": [
+   "go",
+   "leave"
+  ]
+ },
+ "designate": {
+  "omit": false,
+  "replace": [
+   "appoint",
+   "choose",
+   "name"
+  ]
+ },
+ "desire": {
+  "omit": false,
+  "replace": [
+   "want",
+   "wish"
+  ]
+ },
+ "determine": {
+  "omit": false,
+  "replace": [
+   "decide",
+   "figure",
+   "find"
+  ]
+ },
+ "disclose": {
+  "omit": false,
+  "replace": [
+   "show"
+  ]
+ },
+ "discontinue": {
+  "omit": false,
+  "replace": [
+   "drop",
+   "stop"
+  ]
+ },
+ "disseminate": {
+  "omit": false,
+  "replace": [
+   "give",
+   "issue",
+   "pass",
+   "send"
+  ]
+ },
+ "due to the fact that": {
+  "omit": false,
+  "replace": [
+   "because",
+   "due to",
+   "since"
+  ]
+ },
+ "during the period": {
+  "omit": false,
+  "replace": [
+   "during"
+  ]
+ },
+ "e.g.": {
+  "omit": false,
+  "replace": [
+   "for example",
+   "such as"
+  ]
+ },
+ "each and every": {
+  "omit": false,
+  "replace": [
+   "each"
+  ]
+ },
+ "economical": {
+  "omit": false,
+  "replace": [
+   "cheap"
+  ]
+ },
+ "effect": {
+  "omit": false,
+  "replace": [
+   "choose",
+   "pick",
+   "result"
+  ]
+ },
+ "effect modifications": {
+  "omit": false,
+  "replace": [
+   "make changes"
+  ]
+ },
+ "elect": {
+  "omit": false,
+  "replace": [
+   "choose"
+  ]
+ },
+ "eliminate": {
+  "omit": false,
+  "replace": [
+   "cut",
+   "drop",
+   "end",
+   "stop"
+  ]
+ },
+ "elucidate": {
+  "omit": false,
+  "replace": [
+   "explain"
+  ]
+ },
+ "employ": {
+  "omit": false,
+  "replace": [
+   "use"
+  ]
+ },
+ "encounter": {
+  "omit": false,
+  "replace": [
+   "meet"
+  ]
+ },
+ "endeavor": {
+  "omit": false,
+  "replace": [
+   "try"
+  ]
+ },
+ "ensure": {
+  "omit": false,
+  "replace": [
+   "make sure"
+  ]
+ },
+ "enumerate": {
+  "omit": false,
+  "replace": [
+   "count"
+  ]
+ },
+ "equipments": {
+  "omit": false,
+  "replace": [
+   "equipment"
+  ]
+ },
+ "equitable": {
+  "omit": false,
+  "replace": [
+   "fair"
+  ]
+ },
+ "equivalent": {
+  "omit": false,
+  "replace": [
+   "equal"
+  ]
+ },
+ "establish": {
+  "omit": false,
+  "replace": [
+   "set up",
+   "prove",
+   "show"
+  ]
+ },
+ "evaluate": {
+  "omit": false,
+  "replace": [
+   "check",
+   "test"
+  ]
+ },
+ "evidenced": {
+  "omit": false,
+  "replace": [
+   "showed"
+  ]
+ },
+ "evident": {
+  "omit": false,
+  "replace": [
+   "clear"
+  ]
+ },
+ "exclusively": {
+  "omit": false,
+  "replace": [
+   "only"
+  ]
+ },
+ "exhibit": {
+  "omit": false,
+  "replace": [
+   "show"
+  ]
+ },
+ "expedite": {
+  "omit": false,
+  "replace": [
+   "hasten",
+   "hurry",
+   "speed up"
+  ]
+ },
+ "expeditious": {
+  "omit": false,
+  "replace": [
+   "fast",
+   "quick"
+  ]
+ },
+ "expend": {
+  "omit": false,
+  "replace": [
+   "spend"
+  ]
+ },
+ "expertise": {
+  "omit": false,
+  "replace": [
+   "ability"
+  ]
+ },
+ "expiration": {
+  "omit": false,
+  "replace": [
+   "end"
+  ]
+ },
+ "facilitate": {
+  "omit": false,
+  "replace": [
+   "ease",
+   "help"
+  ]
+ },
+ "factual evidence": {
+  "omit": false,
+  "replace": [
+   "evidence",
+   "facts"
+  ]
+ },
+ "failed to": {
+  "omit": false,
+  "replace": [
+   "didn\u2019t"
+  ]
+ },
+ "feasible": {
+  "omit": false,
+  "replace": [
+   "can be done",
+   "workable"
+  ]
+ },
+ "females": {
+  "omit": false,
+  "replace": [
+   "women"
+  ]
+ },
+ "finalise": {
+  "omit": false,
+  "replace": [
+   "complete",
+   "finish"
+  ]
+ },
+ "finalize": {
+  "omit": false,
+  "replace": [
+   "complete",
+   "finish"
+  ]
+ },
+ "first and foremost": {
+  "omit": false,
+  "replace": [
+   "first"
+  ]
+ },
+ "for a period of": {
+  "omit": false,
+  "replace": [
+   "for"
+  ]
+ },
+ "for the purpose of": {
+  "omit": false,
+  "replace": [
+   "to"
+  ]
+ },
+ "forfeit": {
+  "omit": false,
+  "replace": [
+   "give up",
+   "lose"
+  ]
+ },
+ "formulate": {
+  "omit": false,
+  "replace": [
+   "plan"
+  ]
+ },
+ "forward": {
+  "omit": false,
+  "replace": [
+   "send"
+  ]
+ },
+ "frequently": {
+  "omit": false,
+  "replace": [
+   "often"
+  ]
+ },
+ "function": {
+  "omit": false,
+  "replace": [
+   "act",
+   "role",
+   "work"
+  ]
+ },
+ "furnish": {
+  "omit": false,
+  "replace": [
+   "give",
+   "send"
+  ]
+ },
+ "has a requirement for": {
+  "omit": false,
+  "replace": [
+   "needs"
+  ]
+ },
+ "has no effect": {
+  "omit": false,
+  "replace": [
+   "does nothing",
+   "does not apply"
+  ]
+ },
+ "herein": {
+  "omit": false,
+  "replace": [
+   "here"
+  ]
+ },
+ "heretofore": {
+  "omit": false,
+  "replace": [
+   "until now"
+  ]
+ },
+ "herewith": {
+  "omit": false,
+  "replace": [
+   "here",
+   "below"
+  ]
+ },
+ "honest truth": {
+  "omit": false,
+  "replace": [
+   "truth"
+  ]
+ },
+ "however": {
+  "omit": false,
+  "replace": [
+   "but",
+   "yet"
+  ]
+ },
+ "i.e.": {
+  "omit": false,
+  "replace": [
+   "as in"
+  ]
+ },
+ "identical": {
+  "omit": false,
+  "replace": [
+   "same"
+  ]
+ },
+ "identify": {
+  "omit": false,
+  "replace": [
+   "find",
+   "name",
+   "show"
+  ]
+ },
+ "if and when": {
+  "omit": false,
+  "replace": [
+   "if",
+   "when"
+  ]
+ },
+ "immediately": {
+  "omit": false,
+  "replace": [
+   "at once"
+  ]
+ },
+ "impacted": {
+  "omit": false,
+  "replace": [
+   "affected",
+   "changed",
+   "harmed"
+  ]
+ },
+ "implement": {
+  "omit": false,
+  "replace": [
+   "carry out",
+   "install",
+   "put in place",
+   "tool",
+   "start"
+  ]
+ },
+ "in a timely manner": {
+  "omit": false,
+  "replace": [
+   "on time",
+   "promptly"
+  ]
+ },
+ "in accordance with": {
+  "omit": false,
+  "replace": [
+   "by",
+   "under",
+   "following",
+   "per"
+  ]
+ },
+ "in addition": {
+  "omit": false,
+  "replace": [
+   "also",
+   "besides",
+   "too"
+  ]
+ },
+ "in all likelihood": {
+  "omit": false,
+  "replace": [
+   "probably"
+  ]
+ },
+ "in an effort to": {
+  "omit": false,
+  "replace": [
+   "to"
+  ]
+ },
+ "in between": {
+  "omit": false,
+  "replace": [
+   "between"
+  ]
+ },
+ "in excess of": {
+  "omit": false,
+  "replace": [
+   "more than"
+  ]
+ },
+ "in lieu of": {
+  "omit": false,
+  "replace": [
+   "instead"
+  ]
+ },
+ "in light of the fact that": {
+  "omit": false,
+  "replace": [
+   "because"
+  ]
+ },
+ "in many cases": {
+  "omit": false,
+  "replace": [
+   "often"
+  ]
+ },
+ "in order for": {
+  "omit": false,
+  "replace": [
+   "for"
+  ]
+ },
+ "in order that": {
+  "omit": false,
+  "replace": [
+   "for",
+   "so"
+  ]
+ },
+ "in order to": {
+  "omit": false,
+  "replace": [
+   "to"
+  ]
+ },
+ "in regard to": {
+  "omit": false,
+  "replace": [
+   "about",
+   "concerning",
+   "on"
+  ]
+ },
+ "in relation to": {
+  "omit": false,
+  "replace": [
+   "about",
+   "with",
+   "to"
+  ]
+ },
+ "in some instances": {
+  "omit": false,
+  "replace": [
+   "sometimes"
+  ]
+ },
+ "in terms of": {
+  "omit": true,
+  "replace": [
+   "as",
+   "for",
+   "with"
+  ]
+ },
+ "in the amount of": {
+  "omit": false,
+  "replace": [
+   "for"
+  ]
+ },
+ "in the event of": {
+  "omit": false,
+  "replace": [
+   "if"
+  ]
+ },
+ "in the near future": {
+  "omit": false,
+  "replace": [
+   "soon",
+   "shortly"
+  ]
+ },
+ "in the process of": {
+  "omit": true,
+  "replace": []
+ },
+ "in view of": {
+  "omit": false,
+  "replace": [
+   "since"
+  ]
+ },
+ "in view of the above": {
+  "omit": false,
+  "replace": [
+   "so"
+  ]
+ },
+ "inasmuch as": {
+  "omit": false,
+  "replace": [
+   "since"
+  ]
+ },
+ "inception": {
+  "omit": false,
+  "replace": [
+   "start"
+  ]
+ },
+ "incumbent upon": {
+  "omit": false,
+  "replace": [
+   "must"
+  ]
+ },
+ "indicate": {
+  "omit": false,
+  "replace": [
+   "show",
+   "say",
+   "state",
+   "write down"
+  ]
+ },
+ "indication": {
+  "omit": false,
+  "replace": [
+   "sign"
+  ]
+ },
+ "initial": {
+  "omit": false,
+  "replace": [
+   "first"
+  ]
+ },
+ "initiate": {
+  "omit": false,
+  "replace": [
+   "start"
+  ]
+ },
+ "inter alia": {
+  "omit": true,
+  "replace": []
+ },
+ "interface": {
+  "omit": false,
+  "replace": [
+   "meet",
+   "work with"
+  ]
+ },
+ "interpose no objection": {
+  "omit": false,
+  "replace": [
+   "don\u2019t object"
+  ]
+ },
+ "is applicable to": {
+  "omit": false,
+  "replace": [
+   "applies to"
+  ]
+ },
+ "is authorised to": {
+  "omit": false,
+  "replace": [
+   "may"
+  ]
+ },
+ "is authorized to": {
+  "omit": false,
+  "replace": [
+   "may"
+  ]
+ },
+ "is in consonance with": {
+  "omit": false,
+  "replace": [
+   "agrees with",
+   "follows"
+  ]
+ },
+ "is responsible for": {
+  "omit": true,
+  "replace": [
+   "handles"
+  ]
+ },
+ "it appears": {
+  "omit": false,
+  "replace": [
+   "seems"
+  ]
+ },
+ "it is": {
+  "omit": true,
+  "replace": []
+ },
+ "it is essential": {
+  "omit": false,
+  "replace": [
+   "must",
+   "need to"
+  ]
+ },
+ "it is requested": {
+  "omit": false,
+  "replace": [
+   "please"
+  ]
+ },
+ "liaison": {
+  "omit": false,
+  "replace": [
+   "discussion"
+  ]
+ },
+ "limited number": {
+  "omit": false,
+  "replace": [
+   "limits"
+  ]
+ },
+ "literally": {
+  "omit": true,
+  "replace": []
+ },
+ "magnitude": {
+  "omit": false,
+  "replace": [
+   "size"
+  ]
+ },
+ "maintain": {
+  "omit": false,
+  "replace": [
+   "support",
+   "keep"
+  ]
+ },
+ "maximum": {
+  "omit": false,
+  "replace": [
+   "greatest",
+   "largest",
+   "most"
+  ]
+ },
+ "methodology": {
+  "omit": false,
+  "replace": [
+   "method"
+  ]
+ },
+ "minimise": {
+  "omit": false,
+  "replace": [
+   "cut",
+   "decrease"
+  ]
+ },
+ "minimize": {
+  "omit": false,
+  "replace": [
+   "cut",
+   "decrease"
+  ]
+ },
+ "minimum": {
+  "omit": false,
+  "replace": [
+   "least",
+   "small",
+   "smallest"
+  ]
+ },
+ "modify": {
+  "omit": false,
+  "replace": [
+   "change"
+  ]
+ },
+ "monitor": {
+  "omit": false,
+  "replace": [
+   "check",
+   "track",
+   "watch"
+  ]
+ },
+ "multiple": {
+  "omit": false,
+  "replace": [
+   "many"
+  ]
+ },
+ "necessitate": {
+  "omit": false,
+  "replace": [
+   "cause",
+   "need"
+  ]
+ },
+ "nevertheless": {
+  "omit": false,
+  "replace": [
+   "besides",
+   "even so",
+   "still"
+  ]
+ },
+ "not certain": {
+  "omit": false,
+  "replace": [
+   "uncertain"
+  ]
+ },
+ "not later than": {
+  "omit": false,
+  "replace": [
+   "by",
+   "before"
+  ]
+ },
+ "not many": {
+  "omit": false,
+  "replace": [
+   "few"
+  ]
+ },
+ "not often": {
+  "omit": false,
+  "replace": [
+   "rarely"
+  ]
+ },
+ "not unless": {
+  "omit": false,
+  "replace": [
+   "only if"
+  ]
+ },
+ "not unlike": {
+  "omit": false,
+  "replace": [
+   "alike",
+   "similar"
+  ]
+ },
+ "notify": {
+  "omit": false,
+  "replace": [
+   "let know",
+   "tell"
+  ]
+ },
+ "notwithstanding": {
+  "omit": false,
+  "replace": [
+   "despite",
+   "in spite of",
+   "still"
+  ]
+ },
+ "null and void": {
+  "omit": false,
+  "replace": [
+   "null",
+   "void"
+  ]
+ },
+ "numerous": {
+  "omit": false,
+  "replace": [
+   "many"
+  ]
+ },
+ "objective": {
+  "omit": false,
+  "replace": [
+   "aim",
+   "goal"
+  ]
+ },
+ "obligate": {
+  "omit": false,
+  "replace": [
+   "bind",
+   "compel"
+  ]
+ },
+ "observe": {
+  "omit": false,
+  "replace": [
+   "see"
+  ]
+ },
+ "obtain": {
+  "omit": false,
+  "replace": [
+   "get"
+  ]
+ },
+ "on the contrary": {
+  "omit": false,
+  "replace": [
+   "but",
+   "so"
+  ]
+ },
+ "on the other hand": {
+  "omit": true,
+  "replace": [
+   "but",
+   "so"
+  ]
+ },
+ "one particular": {
+  "omit": false,
+  "replace": [
+   "one"
+  ]
+ },
+ "operate": {
+  "omit": false,
+  "replace": [
+   "run",
+   "use",
+   "work"
+  ]
+ },
+ "optimum": {
+  "omit": false,
+  "replace": [
+   "best",
+   "greatest",
+   "most"
+  ]
+ },
+ "option": {
+  "omit": false,
+  "replace": [
+   "choice"
+  ]
+ },
+ "overall": {
+  "omit": true,
+  "replace": []
+ },
+ "owing to the fact that": {
+  "omit": false,
+  "replace": [
+   "because",
+   "since"
+  ]
+ },
+ "parameters": {
+  "omit": false,
+  "replace": [
+   "limits"
+  ]
+ },
+ "participate": {
+  "omit": false,
+  "replace": [
+   "take part"
+  ]
+ },
+ "particulars": {
+  "omit": false,
+  "replace": [
+   "details"
+  ]
+ },
+ "pass away": {
+  "omit": false,
+  "replace": [
+   "die"
+  ]
+ },
+ "perform": {
+  "omit": false,
+  "replace": [
+   "do"
+  ]
+ },
+ "permit": {
+  "omit": false,
+  "replace": [
+   "let"
+  ]
+ },
+ "pertaining to": {
+  "omit": false,
+  "replace": [
+   "about",
+   "of",
+   "on"
+  ]
+ },
+ "point in time": {
+  "omit": false,
+  "replace": [
+   "moment",
+   "now",
+   "point",
+   "time"
+  ]
+ },
+ "portion": {
+  "omit": false,
+  "replace": [
+   "part"
+  ]
+ },
+ "possess": {
+  "omit": false,
+  "replace": [
+   "have",
+   "own"
+  ]
+ },
+ "practicable": {
+  "omit": false,
+  "replace": [
+   "practical"
+  ]
+ },
+ "preclude": {
+  "omit": false,
+  "replace": [
+   "prevent"
+  ]
+ },
+ "previous": {
+  "omit": false,
+  "replace": [
+   "earlier"
+  ]
+ },
+ "previously": {
+  "omit": false,
+  "replace": [
+   "before"
+  ]
+ },
+ "prior to": {
+  "omit": false,
+  "replace": [
+   "before"
+  ]
+ },
+ "prioritise": {
+  "omit": false,
+  "replace": [
+   "focus on",
+   "rank"
+  ]
+ },
+ "prioritize": {
+  "omit": false,
+  "replace": [
+   "focus on",
+   "rank"
+  ]
+ },
+ "proceed": {
+  "omit": false,
+  "replace": [
+   "do",
+   "go ahead",
+   "try"
+  ]
+ },
+ "procure": {
+  "omit": true,
+  "replace": [
+   "buy",
+   "get"
+  ]
+ },
+ "proficiency": {
+  "omit": false,
+  "replace": [
+   "skill"
+  ]
+ },
+ "promulgate": {
+  "omit": false,
+  "replace": [
+   "issue",
+   "publish"
+  ]
+ },
+ "provide": {
+  "omit": false,
+  "replace": [
+   "give",
+   "offer",
+   "say"
+  ]
+ },
+ "provided that": {
+  "omit": false,
+  "replace": [
+   "if"
+  ]
+ },
+ "provides guidance for": {
+  "omit": false,
+  "replace": [
+   "guides"
+  ]
+ },
+ "purchase": {
+  "omit": false,
+  "replace": [
+   "buy",
+   "sale"
+  ]
+ },
+ "pursuant to": {
+  "omit": false,
+  "replace": [
+   "by",
+   "following",
+   "per",
+   "under"
+  ]
+ },
+ "put simply": {
+  "omit": true,
+  "replace": []
+ },
+ "readily apparent": {
+  "omit": false,
+  "replace": [
+   "clear"
+  ]
+ },
+ "refer back": {
+  "omit": false,
+  "replace": [
+   "refer"
+  ]
+ },
+ "reflect": {
+  "omit": false,
+  "replace": [
+   "say",
+   "show"
+  ]
+ },
+ "regarding": {
+  "omit": false,
+  "replace": [
+   "about",
+   "of",
+   "on"
+  ]
+ },
+ "relative to": {
+  "omit": false,
+  "replace": [
+   "about",
+   "on"
+  ]
+ },
+ "relocate": {
+  "omit": false,
+  "replace": [
+   "move"
+  ]
+ },
+ "remain": {
+  "omit": false,
+  "replace": [
+   "stay"
+  ]
+ },
+ "remainder": {
+  "omit": false,
+  "replace": [
+   "rest"
+  ]
+ },
+ "remuneration": {
+  "omit": false,
+  "replace": [
+   "pay",
+   "payment"
+  ]
+ },
+ "render": {
+  "omit": false,
+  "replace": [
+   "give",
+   "make"
+  ]
+ },
+ "represents": {
+  "omit": false,
+  "replace": [
+   "is"
+  ]
+ },
+ "request": {
+  "omit": false,
+  "replace": [
+   "ask"
+  ]
+ },
+ "require": {
+  "omit": false,
+  "replace": [
+   "must",
+   "need"
+  ]
+ },
+ "requirement": {
+  "omit": false,
+  "replace": [
+   "need",
+   "rule"
+  ]
+ },
+ "reside": {
+  "omit": false,
+  "replace": [
+   "live"
+  ]
+ },
+ "residence": {
+  "omit": false,
+  "replace": [
+   "house"
+  ]
+ },
+ "retain": {
+  "omit": false,
+  "replace": [
+   "keep"
+  ]
+ },
+ "satisfy": {
+  "omit": false,
+  "replace": [
+   "meet",
+   "please"
+  ]
+ },
+ "selection": {
+  "omit": false,
+  "replace": [
+   "choice"
+  ]
+ },
+ "set forth in": {
+  "omit": false,
+  "replace": [
+   "in"
+  ]
+ },
+ "shall": {
+  "omit": false,
+  "replace": [
+   "must",
+   "will"
+  ]
+ },
+ "should you wish": {
+  "omit": false,
+  "replace": [
+   "if you want"
+  ]
+ },
+ "similar to": {
+  "omit": false,
+  "replace": [
+   "like"
+  ]
+ },
+ "solicit": {
+  "omit": false,
+  "replace": [
+   "ask for",
+   "request"
+  ]
+ },
+ "span across": {
+  "omit": false,
+  "replace": [
+   "cross",
+   "span"
+  ]
+ },
+ "state-of-the-art": {
+  "omit": false,
+  "replace": [
+   "latest"
+  ]
+ },
+ "strategise": {
+  "omit": false,
+  "replace": [
+   "plan"
+  ]
+ },
+ "strategize": {
+  "omit": false,
+  "replace": [
+   "plan"
+  ]
+ },
+ "submit": {
+  "omit": false,
+  "replace": [
+   "give",
+   "send"
+  ]
+ },
+ "subsequent": {
+  "omit": false,
+  "replace": [
+   "after",
+   "later",
+   "next",
+   "then"
+  ]
+ },
+ "subsequently": {
+  "omit": false,
+  "replace": [
+   "after",
+   "later",
+   "then"
+  ]
+ },
+ "substantial": {
+  "omit": false,
+  "replace": [
+   "large",
+   "much"
+  ]
+ },
+ "successfully complete": {
+  "omit": false,
+  "replace": [
+   "complete",
+   "pass"
+  ]
+ },
+ "sufficient": {
+  "omit": false,
+  "replace": [
+   "enough"
+  ]
+ },
+ "take action to": {
+  "omit": true,
+  "replace": []
+ },
+ "terminate": {
+  "omit": false,
+  "replace": [
+   "end",
+   "stop"
+  ]
+ },
+ "the month of": {
+  "omit": true,
+  "replace": []
+ },
+ "the undersigned": {
+  "omit": false,
+  "replace": [
+   "I"
+  ]
+ },
+ "the use of": {
+  "omit": true,
+  "replace": []
+ },
+ "there are": {
+  "omit": true,
+  "replace": []
+ },
+ "there is": {
+  "omit": true,
+  "replace": []
+ },
+ "therefore": {
+  "omit": false,
+  "replace": [
+   "so",
+   "thus"
+  ]
+ },
+ "therein": {
+  "omit": false,
+  "replace": [
+   "there"
+  ]
+ },
+ "thereof": {
+  "omit": false,
+  "replace": [
+   "its",
+   "their"
+  ]
+ },
+ "this day and age": {
+  "omit": false,
+  "replace": [
+   "today"
+  ]
+ },
+ "time period": {
+  "omit": false,
+  "replace": [
+   "period",
+   "time"
+  ]
+ },
+ "timely": {
+  "omit": false,
+  "replace": [
+   "prompt"
+  ]
+ },
+ "took advantage of": {
+  "omit": false,
+  "replace": [
+   "preyed on"
+  ]
+ },
+ "transmit": {
+  "omit": false,
+  "replace": [
+   "send"
+  ]
+ },
+ "transpire": {
+  "omit": false,
+  "replace": [
+   "happen"
+  ]
+ },
+ "type": {
+  "omit": true,
+  "replace": []
+ },
+ "under the provisions of": {
+  "omit": false,
+  "replace": [
+   "under"
+  ]
+ },
+ "until such time as": {
+  "omit": false,
+  "replace": [
+   "until"
+  ]
+ },
+ "utilisation": {
+  "omit": false,
+  "replace": [
+   "use"
+  ]
+ },
+ "utilise": {
+  "omit": false,
+  "replace": [
+   "use"
+  ]
+ },
+ "utilization": {
+  "omit": false,
+  "replace": [
+   "use"
+  ]
+ },
+ "utilize": {
+  "omit": false,
+  "replace": [
+   "use"
+  ]
+ },
+ "validate": {
+  "omit": false,
+  "replace": [
+   "confirm"
+  ]
+ },
+ "various different": {
+  "omit": false,
+  "replace": [
+   "different",
+   "various"
+  ]
+ },
+ "very": {
+  "omit": true,
+  "replace": []
+ },
+ "viable": {
+  "omit": false,
+  "replace": [
+   "practical",
+   "workable"
+  ]
+ },
+ "vice": {
+  "omit": false,
+  "replace": [
+   "instead of",
+   "versus"
+  ]
+ },
+ "warrant": {
+  "omit": false,
+  "replace": [
+   "call for",
+   "permit"
+  ]
+ },
+ "whereas": {
+  "omit": false,
+  "replace": [
+   "because",
+   "since"
+  ]
+ },
+ "whether or not": {
+  "omit": false,
+  "replace": [
+   "whether"
+  ]
+ },
+ "with reference to": {
+  "omit": false,
+  "replace": [
+   "about"
+  ]
+ },
+ "with respect to": {
+  "omit": false,
+  "replace": [
+   "about",
+   "on"
+  ]
+ },
+ "with the exception of": {
+  "omit": false,
+  "replace": [
+   "except for"
+  ]
+ },
+ "witnessed": {
+  "omit": false,
+  "replace": [
+   "saw",
+   "seen"
+  ]
+ },
+ "your office": {
+  "omit": false,
+  "replace": [
+   "you"
+  ]
+ }
+}

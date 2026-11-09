@@ -1,0 +1,30 @@
+# Automatic synonym pairs that change meaning. One "word -> replacement" per line.
+# Add to this whenever you see a bad swap in the change log.
+big -> bad
+cracker -> redneck
+secret -> underground
+show -> evidence
+show -> express
+demonstrate -> evidence
+demonstrate -> manifest
+heartbeat -> wink
+fussy -> grumpy
+indicate -> point
+approach -> near
+result -> lead
+study -> survey
+increase -> growth
+assist -> assistance
+nominal -> token
+substantial -> substantive
+approve -> okay
+rely -> trust
+formerly -> once
+colour -> color
+system -> scheme
+amount -> sum
+result -> effect
+estimate -> estimation
+contain -> curb
+contain -> hold
+obtain -> receive
