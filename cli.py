@@ -1,26 +1,9 @@
-"""Command-line interface.
+"""Slightly augment phrasing.
 
-Input can be literal text, a file path, or stdin:
-
-    rewriter "Moreover, we utilize a robust method."      # text -> stdout
-    rewriter essay.txt                                     # -> essay.improved.txt
-    rewriter essay.txt -o -                                # file -> stdout
-    rewriter paper.docx -o paper.out.docx                  # Word, formatting kept
-    rewriter paper.tex                                     # LaTeX-aware
-    cat essay.txt | rewriter                               # stdin -> stdout
-    rewriter essay.txt --offline                           # never call an LLM
-    rewriter essay.txt --pattern 50,200,200                # keep 50 words, Haiku 200, Gemini 200, repeat
-    rewriter essay.txt --pattern off                       # per-paragraph Haiku + local rules instead
-    rewriter -t "essay.txt"                                # force: treat as text, not a path
-
-    rewriter check "some text"   |  rewriter check essay.txt
-    rewriter compare original.txt improved.txt
-
-    rewriter --setup                     install ~/.local/bin/rewriter, check claude and agy (Linux)
-    rewriter --setup --web [--port N]    also run the web app as a systemd user service
-
-Exit status: 0 on success. 1 if a model was unavailable or couldn't improve its part; nothing
-is written in that case.
+    text-improver "A sentence to adjust."
+    text-improver essay.txt
+    text-improver essay.txt -o -
+    cat essay.txt | text-improver
 """
 from __future__ import annotations
 
@@ -151,50 +134,48 @@ def cmd_compare(a) -> None:
     print(f"{'words improved':18}{'':>14}{change_ratio(x, y):>14.1%}")
 
 
-def build_parser() -> argparse.ArgumentParser:
-    ap = argparse.ArgumentParser(prog="rewriter", description="Improve text (local rules + optional Claude Haiku). "
-                                 "INPUT may be literal text, a file path (.txt/.md/.tex/.docx), or '-' / stdin.",
-                                 formatter_class=argparse.RawDescriptionHelpFormatter, epilog=__doc__)
-    sub = ap.add_subparsers(dest="cmd", required=True)
+class _Help(argparse.RawDescriptionHelpFormatter):
+    def _format_action(self, action):
+        if action.help is argparse.SUPPRESS:
+            return ""
+        return super()._format_action(action)
 
-    r = sub.add_parser("improve", help="improve text or a file (default command)")
+
+def build_parser() -> argparse.ArgumentParser:
+    ap = argparse.ArgumentParser(prog="text-improver", description="Slightly augment phrasing.",
+                                 formatter_class=_Help, epilog=__doc__)
+    sub = ap.add_subparsers(dest="cmd", required=True, metavar="{improve}")
+
+    r = sub.add_parser("improve", help="slightly augment phrasing in text or a file (default command)")
     r.add_argument("input", nargs="?", help="text, file path, or - for stdin (default: stdin)")
     r.add_argument("-t", "--text", action="store_true", help="treat INPUT as text even if a file has that name")
     r.add_argument("-o", "--output", help="output file, or - for stdout")
-    r.add_argument("-i", "--intensity", type=float, default=0.5, help="0..1 (default 0.5)")
-    r.add_argument("-s", "--seed", type=int, help="fix the random choices for repeatable output")
-    r.add_argument("-p", "--protect", help="comma-separated terms never to change")
-    r.add_argument("--latex", action="store_true", help="LaTeX-aware (automatic for .tex files)")
-    r.add_argument("--no-synonyms", action="store_true")
-    r.add_argument("--no-structure", action="store_true")
-    r.add_argument("--no-phrases", action="store_true")
-    r.add_argument("--keep-metadata", action="store_true", help="(.docx) keep author/comments metadata")
-    r.add_argument("-l", "--log", action="store_true", help="print each improvement to stderr")
-    g = r.add_argument_group("LLM (optional Claude Haiku and Gemini)")
-    g.add_argument("--llm", choices=["auto", "cli", "api", "off"], default="auto",
-                   help="auto (default): API if ANTHROPIC_API_KEY is set, else the `claude` CLI, "
-                        "else local rules. off: local rules only (nothing leaves the machine)")
-    g.add_argument("--offline", dest="llm", action="store_const", const="off", help="same as --llm off")
-    g.add_argument("--model", help="model (default: 'haiku' for the CLI, claude-haiku-5-5 for the API)")
-    g.add_argument("--swap-every", type=int, default=12, metavar="N",
-                   help="improve about one word in every N words (default 12)")
-    g.add_argument("--restructure-every", type=int, default=4, metavar="N",
-                   help="improve about one sentence in every N (default 4)")
-    g.add_argument("--workers", type=int, default=4, help="parallel LLM calls (default 4)")
-    g.add_argument("--pattern", metavar="X,Y,Z",
-                   help="repeat across the document: leave X words unchanged, improve Y words with Haiku, "
-                        "improve Z words with Gemini (default 100,150,150). Windows end on sentence boundaries. "
-                        "Only those words are improved: the phrase bank and local rules are off. "
-                        "Use 'off' for per-paragraph Haiku plus local rules")
-    g.add_argument("--gemini-model", help="Gemini model, as listed by `agy models` (default gemini-3.8-flash-low)")
+    r.add_argument("-i", "--intensity", type=float, default=0.5, help=argparse.SUPPRESS)
+    r.add_argument("-s", "--seed", type=int, help=argparse.SUPPRESS)
+    r.add_argument("-p", "--protect", help=argparse.SUPPRESS)
+    r.add_argument("--latex", action="store_true", help=argparse.SUPPRESS)
+    r.add_argument("--no-synonyms", action="store_true", help=argparse.SUPPRESS)
+    r.add_argument("--no-structure", action="store_true", help=argparse.SUPPRESS)
+    r.add_argument("--no-phrases", action="store_true", help=argparse.SUPPRESS)
+    r.add_argument("--keep-metadata", action="store_true", help=argparse.SUPPRESS)
+    r.add_argument("-l", "--log", action="store_true", help=argparse.SUPPRESS)
+    g = r.add_argument_group("options")
+    g.add_argument("--llm", choices=["auto", "cli", "api", "off"], default="auto", help=argparse.SUPPRESS)
+    g.add_argument("--offline", dest="llm", action="store_const", const="off", help=argparse.SUPPRESS)
+    g.add_argument("--model", help=argparse.SUPPRESS)
+    g.add_argument("--swap-every", type=int, default=12, metavar="N", help=argparse.SUPPRESS)
+    g.add_argument("--restructure-every", type=int, default=4, metavar="N", help=argparse.SUPPRESS)
+    g.add_argument("--workers", type=int, default=4, help=argparse.SUPPRESS)
+    g.add_argument("--pattern", metavar="X,Y,Z", help=argparse.SUPPRESS)
+    g.add_argument("--gemini-model", help=argparse.SUPPRESS)
     r.set_defaults(fn=cmd_rewrite)
 
-    c = sub.add_parser("check", help="local diagnostics: ZipPy, AI-marker density, burstiness")
+    c = sub.add_parser("check", help=argparse.SUPPRESS)
     c.add_argument("input", nargs="?")
     c.add_argument("-t", "--text", action="store_true")
     c.set_defaults(fn=cmd_check)
 
-    m = sub.add_parser("compare", help="metrics for original vs improved")
+    m = sub.add_parser("compare", help=argparse.SUPPRESS)
     m.add_argument("original")
     m.add_argument("improved")
     m.set_defaults(fn=cmd_compare)
@@ -202,7 +183,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def build_setup_parser() -> argparse.ArgumentParser:
-    ap = argparse.ArgumentParser(prog="rewriter --setup",
+    ap = argparse.ArgumentParser(prog="text-improver --setup",
                                  description="Install the program and check that the claude and agy "
                                              "CLIs are signed in (Debian/Linux). Run as your normal user.")
     ap.add_argument("--setup", action="store_true", help=argparse.SUPPRESS)
