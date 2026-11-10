@@ -1,10 +1,4 @@
-"""Undo LLM word swaps that are likely to change meaning, without another model call.
-
-A swap is undone when the original word is a name (spaCy PROPN), contains a digit, is rare
-enough to be a technical term (wordfreq Zipf below RARE_ZIPF), or when the pair is on the
-blocklist for that model (data/llm_blocklist.txt plus data/synonym_blocklist.txt). Only the
-risky swap is undone; the rest of the model's edits stay.
-"""
+"""Put back wording that is likely to change the meaning."""
 from __future__ import annotations
 
 import difflib
@@ -75,10 +69,10 @@ def _blocked(old: list[str], new: list[str], label: str) -> bool:
     return False
 
 
-def revert_risky(original: str, rewritten: str, label: str) -> tuple[str, list[tuple[str, str]]]:
+def revert_risky(original: str, adjusted: str, label: str) -> tuple[str, list[tuple[str, str]]]:
     """Return the rewrite with risky swaps put back, and the (before, after) pairs that were undone."""
     ta = [m for m in re.finditer(r"\S+", original)]
-    tb = re.findall(r"\S+", rewritten)
+    tb = re.findall(r"\S+", adjusted)
     words_a = [m.group(0) for m in ta]
     names = _proper_noun_starts(original)
     out: list[str] = []
@@ -103,5 +97,5 @@ def revert_risky(original: str, rewritten: str, label: str) -> tuple[str, list[t
     text = " ".join(out)
     # Undoing one edit must never duplicate or drop a locked token that moved elsewhere.
     if Counter(PH_RE.findall(text)) != Counter(PH_RE.findall(original)):
-        return original, [(original, rewritten)]
+        return original, [(original, adjusted)]
     return text, undone

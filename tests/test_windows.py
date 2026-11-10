@@ -4,11 +4,11 @@ import re
 import pytest
 from docx import Document
 
-import rewriter.llm as L
-from rewriter.docx_io import rewrite_docx
-from rewriter.llm import LLMConfig, LLMError
-from rewriter.pipeline import Options, rewrite
-from rewriter.windows import Phase, Span, assign_phases, context, parse_pattern, plan
+import text_improver.llm as L
+from text_improver.docx_io import rewrite_docx
+from text_improver.llm import LLMConfig, LLMError
+from text_improver.pipeline import Options, rewrite
+from text_improver.windows import Phase, Span, assign_phases, context, parse_pattern, plan
 
 
 def _sentence(n: int) -> str:
@@ -20,7 +20,7 @@ def _fake(tag: str, calls: list | None = None):
         if calls is not None:
             calls.append(prompt)
         edit = re.search(r"<edit>\n(.*)\n</edit>", prompt, re.S).group(1)
-        return f"<rewritten>{edit.replace('shows', tag)}</rewritten>"
+        return f"<out>{edit.replace('shows', tag)}</out>"
 
     return call
 
@@ -108,7 +108,7 @@ def test_bad_output_leaves_window_unchanged(monkeypatch, rotation):
     text = " ".join(_sentence(i) for i in range(3))
     r = rewrite(text, Options(rotation=phases, llm_workers=1))
     assert _sentence(1) in r.text and "GEMINI" in r.text
-    assert not r.ok and r.failures[0].startswith("haiku:")
+    assert not r.ok and r.failures[0].startswith("helper A:")
 
 
 def test_unchanged_reply_is_retried_but_not_a_failure(monkeypatch, rotation):
@@ -117,7 +117,7 @@ def test_unchanged_reply_is_retried_but_not_a_failure(monkeypatch, rotation):
 
     def echo(prompt, cfg):
         calls.append(1)
-        return "<rewritten>" + re.search(r"<edit>\n(.*)\n</edit>", prompt, re.S).group(1) + "</rewritten>"
+        return "<out>" + re.search(r"<edit>\n(.*)\n</edit>", prompt, re.S).group(1) + "</out>"
 
     monkeypatch.setitem(L._CALLS, ("claude", "cli"), echo)
     r = rewrite(" ".join(_sentence(i) for i in range(2)), Options(rotation=phases, llm_workers=1))
@@ -130,7 +130,7 @@ def test_missing_gemini_warns_and_keeps_text(monkeypatch, rotation):
     text = " ".join(_sentence(i) for i in range(3))
     r = rewrite(text, Options(rotation=[phases[0], phases[1], gone], llm_workers=1))
     assert _sentence(2) in r.text and "HAIKU" in r.text
-    assert not r.ok and r.failures[0].startswith("gemini unavailable")
+    assert not r.ok and r.failures[0].startswith("helper B unavailable")
 
 
 def test_docx_rotation_carries_across_paragraphs(rotation):
@@ -151,7 +151,7 @@ def test_drift_guard_runs_on_model_replies(monkeypatch, rotation):
 
     def gemini(prompt, cfg):
         edit = re.search(r"<edit>\n(.*)\n</edit>", prompt, re.S).group(1)
-        return "<rewritten>" + edit.replace("hire", "pay").replace("quickly", "fast") + "</rewritten>"
+        return "<out>" + edit.replace("hire", "pay").replace("quickly", "fast") + "</out>"
 
     monkeypatch.setitem(L._CALLS, ("gemini", "cli"), gemini)
     text = "Some departments now hire local residents quickly to check on new plantings early."
@@ -164,13 +164,13 @@ def test_gemini_uses_agy_login(monkeypatch):
 
     def run(cmd, **kw):
         seen["cmd"], seen["cwd"] = cmd, kw["cwd"]
-        return L.subprocess.CompletedProcess(cmd, 0, stdout="<rewritten>a</rewritten>", stderr="")
+        return L.subprocess.CompletedProcess(cmd, 0, stdout="<out>a</out>", stderr="")
 
     monkeypatch.setattr(L.shutil, "which", lambda name: f"/bin/{name}")
     monkeypatch.setattr(L.subprocess, "run", run)
     cfg = LLMConfig(provider="gemini").resolve()
     assert cfg.backend == "cli" and cfg.model == L.DEFAULT_GEMINI_MODEL
-    assert L._call_gemini_cli("hello", cfg) == "<rewritten>a</rewritten>"
+    assert L._call_gemini_cli("hello", cfg) == "<out>a</out>"
     assert seen["cmd"][0] == "/bin/agy" and seen["cmd"][1] == "--print" and "hello" in seen["cmd"][2]
     assert "plan" in seen["cmd"] and cfg.model in seen["cmd"]
     assert not any("dangerously" in part for part in seen["cmd"])
@@ -180,5 +180,5 @@ def test_gemini_uses_agy_login(monkeypatch):
 def test_gemini_failure_is_reported(monkeypatch):
     monkeypatch.setattr(L.shutil, "which", lambda name: f"/bin/{name}")
     monkeypatch.setattr(L.subprocess, "run", lambda cmd, **kw: L.subprocess.CompletedProcess(cmd, 3, stdout="", stderr="sign in"))
-    with pytest.raises(LLMError, match="agy CLI failed: sign in"):
+    with pytest.raises(LLMError, match="helper B failed: sign in"):
         L._call_gemini_cli("hello", LLMConfig("cli", "m", provider="gemini"))

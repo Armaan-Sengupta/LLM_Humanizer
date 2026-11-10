@@ -1,19 +1,4 @@
-"""End-to-end rewrite pipeline.
-
-Local:  1 clean -> 2 mask -> 3 phrase bank
-Then either
-  LLM:  4+5 Claude Haiku (context-aware synonyms + restructuring) on the masked text
-or
-  rules: 4 PPDB/WordNet synonyms -> 5 clause moves/splits
-followed by unmask.
-
-With Options.rotation set, only the LLM stage runs: each window of the document is either left
-alone or reworded by its assigned model.
-
-Every LLM reply passes through drift.revert_risky, which undoes swaps likely to change meaning.
-Anything that stops a model from rewriting its part (a missing CLI, a reply that fails
-validation) is recorded in Result.failures; the CLI turns that into exit code 1.
-"""
+"""Slightly adjust wording, then put protected pieces back."""
 from __future__ import annotations
 
 import difflib
@@ -43,7 +28,7 @@ class Options:
     latex: bool = False
     protect_quotes: bool = True
     protected_terms: list[str] = field(default_factory=list)
-    llm: "object | None" = None  # rewriter.llm.LLMConfig -> use Claude for stages 4-5
+    llm: "object | None" = None  # text_improver.llm.LLMConfig -> use Claude for stages 4-5
     llm_workers: int = 4
     rotation: list[Phase] | None = None  # repeating word-count windows; replaces stages 3-5
 
@@ -148,7 +133,7 @@ def _rewrite_lines(lines: list[str], opts: Options, rng: random.Random,
         try:
             cfg = opts.llm.resolve()
         except LLMError as e:
-            failures.append(f"haiku unavailable: {e}")
+            failures.append(f"helper A unavailable: {e}")
             use_llm = False
     if use_llm:
         todo = [b for b in blocks if b.masked is not None]
@@ -163,7 +148,7 @@ def _rewrite_lines(lines: list[str], opts: Options, rng: random.Random,
             b.work = b.llm_text
         else:
             if use_llm and b.llm_error:
-                failures.append(f"haiku: paragraph {i + 1}: {b.llm_error}")
+                failures.append(f"helper A: paragraph {i + 1}: {b.llm_error}")
             _rules_4_5(b, opts, rng)
 
     out, changes = [], []
@@ -191,7 +176,8 @@ def _rewrite_rotation(lines: list[str], opts: Options,
         try:
             resolved[phase.label] = phase.cfg.resolve()
         except LLMError as e:
-            failures.append(f"{phase.label} unavailable: {e}")
+            _names = {"haiku": "helper A", "gemini": "helper B"}
+            failures.append(f"{_names.get(phase.label, phase.label)} unavailable: {e}")
 
     spans = plan(masked, opts.rotation)
     jobs = [s for s in spans if s.phase.label in resolved and len(masked[s.line][s.start:s.end].split()) >= 6]
@@ -208,7 +194,8 @@ def _rewrite_rotation(lines: list[str], opts: Options,
     with ThreadPoolExecutor(max_workers=max(1, opts.llm_workers)) as ex:
         results = list(ex.map(work, jobs))
 
-    failures += [f"{s.phase.label}: paragraph {s.line + 1}: {error}" for s, (_, error) in zip(jobs, results) if error]
+    _names = {"haiku": "helper A", "gemini": "helper B"}
+    failures += [f"{_names.get(s.phase.label, s.phase.label)}: paragraph {s.line + 1}: {error}" for s, (_, error) in zip(jobs, results) if error]
     changes: list[Change] = []
     out = list(masked)
     for span, (new, _) in reversed(list(zip(jobs, results))):  # back to front keeps offsets valid

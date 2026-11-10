@@ -1,0 +1,6 @@
+b: hire -> pay
+b: resident -> people
+b: resident -> person
+b: build -> gain
+hire -> pay
+resident -> people

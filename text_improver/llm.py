@@ -1,14 +1,4 @@
-"""LLM rewriting with Claude Haiku and Gemini.
-
-Two backends for each provider:
-  * Claude: the `claude` command in print mode using your login, or the Anthropic API if
-    ANTHROPIC_API_KEY is set (stdlib only)
-  * Gemini: the `agy` (Antigravity) command in print mode, using your login
-
-The text sent is already masked: citations, numbers, quotes, formulas and protected terms
-are opaque placeholders (ZXQ0QXZ), so the model never sees or edits them. Every response is
-validated and retried once; a second failure raises LLMError.
-"""
+"""Optional helpers that slightly adjust wording."""
 from __future__ import annotations
 
 import json
@@ -36,10 +26,10 @@ BANNED = ("delve, crucial, pivotal, leverage, robust, seamless, tapestry, realm,
           "showcase, foster, intricate, meticulous, comprehensive, notably, moreover, furthermore, "
           "additionally, testament, landscape, navigate, embark, multifaceted, paramount, holistic")
 
-SYSTEM_PROMPT = """You are a meticulous copy editor. You rewrite one passage at a time and output only the rewritten passage. You never add, remove, or change facts, claims, hedges, numbers, or the author's position."""
+SYSTEM_PROMPT = """You are a meticulous copy editor. You slightly adjust the wording of one passage at a time and output only that passage. You never add, remove, or change facts, claims, hedges, numbers, or the author's position."""
 
-_WORD_RULES = """WORD SUBSTITUTION
-- Replace about {n_swaps} words in total (roughly one in every {swap_every} words). Spread the replacements evenly across the passage; do not cluster them.
+_WORD_RULES = """WORDING
+- Adjust about {n_swaps} words in total (roughly one in every {swap_every} words). Spread the adjustments evenly across the passage; do not cluster them.
 - Each replacement must be a synonym or a short paraphrase that means exactly the same thing in this sentence. Read the whole sentence before choosing.
 - Prefer replacing verbs, adjectives and adverbs. Replace a noun only if it is an everyday word, not a term of art.
 - Use plain, common words. Never pick a rarer, fancier or more formal word than the original.
@@ -61,27 +51,27 @@ STYLE
 - No markdown, no bullet points, no new line breaks, no commentary, no quotation marks around the output.
 - Do not use any of these words: {banned}."""
 
-USER_TEMPLATE = """Rewrite the passage inside <passage> tags by following every rule below.
+USER_TEMPLATE = """Slightly adjust the wording of the passage inside <passage> tags by following every rule below.
 
 """ + _WORD_RULES + """
 
 SENTENCE STRUCTURE
-- Restructure {n_restructure} of the {n_sents} sentences (roughly one in every {restructure_every}). Choose from: move a subordinate clause or prepositional phrase to the other end of the sentence; split one long sentence into two; join two short, closely related sentences; switch active/passive voice when it reads naturally.
+- Adjust {n_restructure} of the {n_sents} sentences (roughly one in every {restructure_every}). Choose from: move a subordinate clause or prepositional phrase to the other end of the sentence; split one long sentence into two; join two short, closely related sentences; switch active/passive voice when it reads naturally.
 - Aim for natural variation in sentence length. Leave the other sentences' structure as they are.
 - Keep sentence order and paragraph flow. Each sentence must still make the same claim with the same strength.
 
 """ + _LOCKED_AND_STYLE + """
 
-Output the rewritten passage inside <rewritten></rewritten> tags and nothing else.
+Output the passage inside <out></out> tags and nothing else.
 
 <passage>
 {passage}
 </passage>"""
 
-WINDOW_TEMPLATE = """Reword the passage inside <edit> tags so that it uses different words and keeps exactly the same meaning.
+WINDOW_TEMPLATE = """Slightly adjust the wording inside <edit> tags so that it keeps exactly the same meaning.
 
 CONTEXT
-- <before> and <after> hold the text around the passage. Read them to understand the passage. Do not reword them or include them in your output.
+- <before> and <after> hold the text around the passage. Read them to understand the passage. Do not adjust them or include them in your output.
 
 """ + _WORD_RULES + """
 
@@ -90,7 +80,7 @@ SENTENCE STRUCTURE
 
 """ + _LOCKED_AND_STYLE + """
 
-Output only the reworded passage inside <rewritten></rewritten> tags and nothing else.
+Output only the passage inside <out></out> tags and nothing else.
 
 <before>
 {before}
@@ -123,7 +113,7 @@ class LLMConfig:
     def resolve(self) -> "LLMConfig":
         if self.provider == "gemini":
             if not shutil.which(self.gemini_bin):
-                raise LLMError("no Gemini backend: install the `agy` CLI and sign in")
+                raise LLMError("helper B is not available")
             return replace(self, backend="cli", model=self.model or DEFAULT_GEMINI_MODEL)
         b = self.backend
         if b == "auto":
@@ -132,7 +122,7 @@ class LLMConfig:
             elif shutil.which(self.claude_bin):
                 b = "cli"
             else:
-                raise LLMError("no LLM backend: set ANTHROPIC_API_KEY or install/log in to the `claude` CLI")
+                raise LLMError("no helper is available")
         model = self.model or (DEFAULT_API_MODEL if b == "api" else DEFAULT_CLI_MODEL)
         return replace(self, backend=b, model=model)
 
@@ -183,9 +173,9 @@ def _call_cli(prompt: str, cfg: LLMConfig) -> str:
     except FileNotFoundError as e:
         raise LLMError(f"`{cfg.claude_bin}` not found") from e
     except subprocess.TimeoutExpired as e:
-        raise LLMError("claude CLI timed out") from e
+        raise LLMError("helper A timed out") from e
     if p.returncode != 0:
-        raise LLMError(f"claude CLI failed: {(p.stderr or p.stdout).strip()[:300]}")
+        raise LLMError(f"helper A failed: {(p.stderr or p.stdout).strip()[:300]}")
     return p.stdout
 
 
@@ -220,15 +210,15 @@ def _call_gemini_cli(prompt: str, cfg: LLMConfig) -> str:
            "--output-format", "text", "--print-timeout", f"{cfg.timeout}s"]
     # An empty working directory keeps project files out of the model's context. It is permanent
     # because agy's background process keeps it open, which would break deleting a temporary one.
-    cwd = os.path.join(tempfile.gettempdir(), "rewriter-agy")
+    cwd = os.path.join(tempfile.gettempdir(), "text-improver")
     os.makedirs(cwd, exist_ok=True)
     try:
         p = subprocess.run(cmd, stdin=subprocess.DEVNULL, capture_output=True, text=True, encoding="utf-8",
                            errors="replace", timeout=cfg.timeout + 15, cwd=cwd)
     except subprocess.TimeoutExpired as e:
-        raise LLMError("agy CLI timed out") from e
+        raise LLMError("helper B timed out") from e
     if p.returncode != 0:
-        raise LLMError(f"agy CLI failed: {(p.stderr or p.stdout).strip()[:300]}")
+        raise LLMError(f"helper B failed: {(p.stderr or p.stdout).strip()[:300]}")
     return p.stdout
 
 
@@ -240,26 +230,26 @@ _CALLS = {
 
 
 def _extract(raw: str) -> str:
-    m = re.search(r"<rewritten>\s*(.*?)\s*</rewritten>", raw, re.S)
+    m = re.search(r"<out>\s*(.*?)\s*</out>", raw, re.S)
     if not m:
         raise LLMError("response missing the expected tags")
     return m.group(1).strip()
 
 
-def validate(original: str, rewritten: str) -> None:
+def validate(original: str, adjusted: str) -> None:
     """Raise LLMError if the rewrite broke a hard constraint."""
-    if not rewritten:
+    if not adjusted:
         raise LLMError("empty improvement")
-    if Counter(PH_RE.findall(original)) != Counter(PH_RE.findall(rewritten)):
+    if Counter(PH_RE.findall(original)) != Counter(PH_RE.findall(adjusted)):
         raise LLMError("locked placeholders were dropped, duplicated or altered")
     a = len(original.split())
-    b = len(rewritten.split())
+    b = len(adjusted.split())
     if not (0.75 * a <= b <= 1.3 * a + 3):
         raise LLMError(f"length changed too much ({a} -> {b} words)")
-    if "\n" in rewritten and "\n" not in original:
+    if "\n" in adjusted and "\n" not in original:
         raise LLMError("added line breaks")
     markdown = r"\*\*|^#|^- "
-    if re.search(markdown, rewritten, re.M) and not re.search(markdown, original, re.M):
+    if re.search(markdown, adjusted, re.M) and not re.search(markdown, original, re.M):
         raise LLMError("added markdown")
 
 

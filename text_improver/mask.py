@@ -1,9 +1,4 @@
-"""Protect spans that must never be rewritten.
-
-Each protected span is swapped for an opaque placeholder token (``ZXQ12QXZ``)
-that spaCy keeps as one token and that every transform skips. After rewriting,
-``unmask`` puts the originals back.
-"""
+"""Keep protected spans unchanged while the rest of the text is adjusted."""
 from __future__ import annotations
 
 import re
@@ -102,7 +97,7 @@ def mask_multiline_latex(text: str, originals: list[str]) -> str:
 
 
 def mask_latex_document(text: str) -> tuple[str, str, str]:
-    """Split a .tex file into (preamble, body, tail) so only the body is rewritten."""
+    """Split a .tex file into (preamble, body, tail) so only the body is adjusted."""
     b = text.find("\\begin{document}")
     e = text.rfind("\\end{document}")
     if b == -1:

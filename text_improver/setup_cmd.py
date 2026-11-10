@@ -1,12 +1,4 @@
-"""`rewriter --setup`: install the binary and check that both model CLIs are ready (Debian/Linux).
-
-    rewriter --setup                  install ~/.local/bin/rewriter and run the checks
-    rewriter --setup --web            also run the web app as a systemd user service
-    rewriter --setup --web --port 8600
-
-Run it as the user who is signed in to `claude` and `agy`, not root: both CLIs keep their
-sign-in in that user's home folder. Returns 0 only when every check passes.
-"""
+"""Install text-improver and check that both helpers are ready."""
 from __future__ import annotations
 
 import os
@@ -17,9 +9,9 @@ from pathlib import Path
 
 from . import llm as L
 
-READY_PROMPT = "Reply with exactly <rewritten>READY</rewritten> and nothing else."
+READY_PROMPT = "Reply with exactly <out>READY</out> and nothing else."
 WEB_PACKAGES = ["spacy", "lemminflect", "wordfreq", "python-docx", "streamlit"]
-SERVICE = "rewriter-web.service"
+SERVICE = "text-improver-web.service"
 
 
 class _Report:
@@ -50,7 +42,7 @@ def _install_binary(r: _Report, bin_dir: Path) -> None:
     if not getattr(sys, "frozen", False):
         r.note("running from source, so there is no binary to install (build one with ./build_linux.sh)")
         return
-    target = bin_dir / "rewriter"
+    target = bin_dir / "text-improver"
     me = Path(sys.executable).resolve()
     if me != target.resolve():
         bin_dir.mkdir(parents=True, exist_ok=True)
@@ -65,16 +57,16 @@ def _install_binary(r: _Report, bin_dir: Path) -> None:
 
 def _check_claude(r: _Report) -> None:
     if not shutil.which("claude"):
-        r.bad("claude is not installed. Install: curl -fsSL https://claude.ai/install.sh | bash")
+        r.bad("helper A is not installed")
     elif _answers("claude"):
-        r.ok("claude is signed in and answering")
+        r.ok("helper A is signed in and answering")
     else:
-        r.bad("claude is installed but didn't answer. Sign in by running: claude")
+        r.bad("helper A is installed but didn't answer")
 
 
 def _check_agy(r: _Report) -> None:
     if not shutil.which("agy"):
-        r.bad("agy is not installed. See https://antigravity.google for the Antigravity CLI")
+        r.bad("helper B is not installed")
         return
     try:
         mcp = subprocess.run(["agy", "mcp", "list"], capture_output=True, text=True, timeout=60,
@@ -83,19 +75,19 @@ def _check_agy(r: _Report) -> None:
     except subprocess.TimeoutExpired:
         listing = "(agy mcp list timed out)"
     if "No MCP servers configured" in listing:
-        r.ok("agy has no MCP servers (they can make print mode hang)")
+        r.ok("helper B has no extra servers")
     else:
-        r.bad("agy has MCP servers configured, which can make print mode hang. Remove each with: agy mcp remove NAME")
+        r.bad("helper B has extra servers configured. Remove each one, then run this again")
         for line in listing.splitlines():
             print(f"        {line}")
     if _answers("gemini"):
-        r.ok("agy is signed in and answering")
+        r.ok("helper B is signed in and answering")
     else:
-        r.bad("agy is installed but didn't answer. Sign in by running: agy")
+        r.bad("helper B is installed but didn't answer")
 
 
 def _app_source() -> Path:
-    """Folder holding app.py and the rewriter package: bundled in the binary, or the repo."""
+    """Folder holding app.py and the text_improver package: bundled in the binary, or the repo."""
     bundled = Path(getattr(sys, "_MEIPASS", "")) / "webapp"
     return bundled if (bundled / "app.py").exists() else Path(__file__).resolve().parents[1]
 
@@ -108,7 +100,7 @@ def _setup_web(r: _Report, app_dir: Path, bin_dir: Path, port: int) -> None:
     src = _app_source()
     app_dir.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src / "app.py", app_dir / "app.py")
-    shutil.copytree(src / "rewriter", app_dir / "rewriter", dirs_exist_ok=True,
+    shutil.copytree(src / "text_improver", app_dir / "text_improver", dirs_exist_ok=True,
                     ignore=shutil.ignore_patterns("__pycache__"))
     venv = app_dir / "venv"
     steps = [
@@ -166,14 +158,14 @@ WantedBy=default.target
 
 def run(web: bool = False, port: int = 8501, bin_dir: Path | None = None, app_dir: Path | None = None) -> int:
     bin_dir = bin_dir or Path(os.environ.get("BIN_DIR", Path.home() / ".local" / "bin"))
-    app_dir = app_dir or Path(os.environ.get("APP_DIR", Path.home() / ".local" / "share" / "rewriter"))
+    app_dir = app_dir or Path(os.environ.get("APP_DIR", Path.home() / ".local" / "share" / "text-improver"))
     try:
         sys.stdout.reconfigure(line_buffering=True)  # show each step as it happens, even when piped to a log
     except (AttributeError, ValueError):
         pass
     linux = sys.platform.startswith("linux")
     if linux and os.geteuid() == 0:
-        print("Run this as your normal user, not root: the CLIs' sign-ins live in that user's home.")
+        print("Run this as your normal user, not root: the helpers' sign-ins live in that user's home.")
         return 2
     r = _Report()
 
@@ -181,10 +173,10 @@ def run(web: bool = False, port: int = 8501, bin_dir: Path | None = None, app_di
     if linux:
         _install_binary(r, bin_dir)
     else:
-        r.note("installing the binary is Linux only; checking the model CLIs only")
-    print("2. Claude Haiku (claude CLI)")
+        r.note("installing the binary is Linux only; checking the helpers only")
+    print("2. Helper A")
     _check_claude(r)
-    print("3. Gemini (agy CLI)")
+    print("3. Helper B")
     _check_agy(r)
     if web:
         print("4. Web app (systemd user service)")

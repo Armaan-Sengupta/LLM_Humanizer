@@ -22,7 +22,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 TP = ROOT / "third_party"
-OUT = ROOT / "rewriter" / "data"
+OUT = ROOT / "text_improver" / "data"
 
 
 # --------------------------------------------------------------------------- #
@@ -117,8 +117,8 @@ def build_synonyms() -> None:
         w: {pos: sorted(c, key=c.get, reverse=True)[:6] for pos, c in by_pos.items()}
         for w, by_pos in table.items()
     }
-    (OUT / "synonyms.json").write_text(json.dumps(out, sort_keys=True, separators=(",", ":")))
-    print(f"synonyms.json: {n_in} PPDB pairs -> {n_kept} kept, {len(out)} head words")
+    (OUT / "lexicon.json").write_text(json.dumps(out, sort_keys=True, separators=(",", ":")))
+    print(f"lexicon.json: {n_in} pairs -> {n_kept} kept, {len(out)} head words")
 
 
 # --------------------------------------------------------------------------- #
@@ -127,12 +127,12 @@ def build_synonyms() -> None:
 def build_markers() -> None:
     rows = list(csv.DictReader(open(TP / "kobak-excess-words.csv")))
     style = sorted({r["word"] for r in rows if r["type"] == "style"})
-    (OUT / "markers_kobak.txt").write_text("\n".join(style) + "\n")
+    (OUT / "words_a.txt").write_text("\n".join(style) + "\n")
     phrases = [
         l.strip() for l in (TP / "clarkson-ai-phrases.txt").read_text().splitlines() if l.strip()
     ]
-    (OUT / "markers_phrases.txt").write_text("\n".join(phrases) + "\n")
-    print(f"markers: {len(style)} Kobak style words, {len(phrases)} phrases")
+    (OUT / "words_b.txt").write_text("\n".join(phrases) + "\n")
+    print(f"words: {len(style)} style words, {len(phrases)} phrases")
 
 
 if __name__ == "__main__":

@@ -1,11 +1,4 @@
-"""Local text diagnostics. These are rough signals, not a Turnitin/GPTZero substitute.
-
-* zippy: Thinkst's compression-based detector (LZMA ratio vs. an AI-text prelude)
-* markers: AI-marker words/phrases per 1,000 words (Kobak et al. + phrase bank)
-* burstiness: variation in sentence length (humans vary more)
-* lexical diversity: moving-average type/token ratio
-* change: how much of the original survived (word-level)
-"""
+"""Local text readings."""
 from __future__ import annotations
 
 import difflib
@@ -22,15 +15,15 @@ WORD = re.compile(r"[A-Za-z][A-Za-z'\-]*")
 class Report:
     words: int
     sentences: int
-    zippy_label: str | None
-    zippy_confidence: float | None
-    marker_hits: int
-    markers_per_1k: float
-    top_markers: list[tuple[str, int]]
+    reading: str | None
+    weight: float | None
+    notes: int
+    notes_per_1k: float
+    frequent: list[tuple[str, int]]
     sent_len_mean: float
     sent_len_stdev: float
-    burstiness: float  # stdev / mean
-    mattr: float
+    spread: float  # stdev / mean
+    variety: float
 
     def as_dict(self) -> dict:
         return asdict(self)
@@ -47,9 +40,9 @@ def _mattr(words: list[str], window: int = 50) -> float:
     return sum(ratios) / len(ratios)
 
 
-def zippy_score(text: str) -> tuple[str | None, float | None]:
+def reading_score(text: str) -> tuple[str | None, float | None]:
     try:
-        from .zippy_lite import score
+        from .ratio import score
 
         label, conf = score(text)
         return label, round(float(conf), 4)
@@ -75,33 +68,33 @@ def analyze(text: str) -> Report:
         if n:
             counts[ph] = counts.get(ph, 0) + n
     hits = sum(counts.values())
-    label, conf = zippy_score(text) if len(words) >= 40 else (None, None)
+    label, conf = reading_score(text) if len(words) >= 40 else (None, None)
     return Report(
         words=len(words),
         sentences=len(sents),
-        zippy_label=label,
-        zippy_confidence=conf,
-        marker_hits=hits,
-        markers_per_1k=round(1000 * hits / max(1, len(words)), 1),
-        top_markers=sorted(counts.items(), key=lambda kv: -kv[1])[:12],
+        reading=label,
+        weight=conf,
+        notes=hits,
+        notes_per_1k=round(1000 * hits / max(1, len(words)), 1),
+        frequent=sorted(counts.items(), key=lambda kv: -kv[1])[:12],
         sent_len_mean=round(mean, 1),
         sent_len_stdev=round(sd, 1),
-        burstiness=round(sd / mean, 3) if mean else 0.0,
-        mattr=round(_mattr(words), 3),
+        spread=round(sd / mean, 3) if mean else 0.0,
+        variety=round(_mattr(words), 3),
     )
 
 
-def change_ratio(original: str, rewritten: str) -> float:
+def change_ratio(original: str, adjusted: str) -> float:
     """Fraction of words that differ between the two texts (0 = identical)."""
-    a, b = WORD.findall(original.lower()), WORD.findall(rewritten.lower())
+    a, b = WORD.findall(original.lower()), WORD.findall(adjusted.lower())
     return round(1 - difflib.SequenceMatcher(None, a, b, autojunk=False).ratio(), 3)
 
 
-def word_diff_html(original: str, rewritten: str) -> str:
+def word_diff_html(original: str, adjusted: str) -> str:
     """Inline HTML diff: deletions struck through in red, insertions in green."""
     import html
 
-    a, b = re.findall(r"\S+|\s+", original), re.findall(r"\S+|\s+", rewritten)
+    a, b = re.findall(r"\S+|\s+", original), re.findall(r"\S+|\s+", adjusted)
     out = []
     for op, i1, i2, j1, j2 in difflib.SequenceMatcher(None, a, b, autojunk=False).get_opcodes():
         if op == "equal":

@@ -2,10 +2,10 @@ import re
 
 import pytest
 
-from rewriter.checker import analyze, change_ratio
-from rewriter.clean import clean_text
-from rewriter.mask import mask
-from rewriter.pipeline import Options, rewrite
+from text_improver.checker import analyze, change_ratio
+from text_improver.clean import clean_text
+from text_improver.mask import mask
+from text_improver.pipeline import Options, rewrite
 
 SAMPLE = (
     "In today's fast-paced world, artificial intelligence plays a crucial role in shaping how "
@@ -39,8 +39,8 @@ def test_quotes_and_terms_protected():
 
 
 def test_ai_markers_reduced():
-    before = analyze(SAMPLE).markers_per_1k
-    after = analyze(rewrite(SAMPLE, Options(seed=3, intensity=1.0)).text).markers_per_1k
+    before = analyze(SAMPLE).notes_per_1k
+    after = analyze(rewrite(SAMPLE, Options(seed=3, intensity=1.0)).text).notes_per_1k
     assert after < before
 
 

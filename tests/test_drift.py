@@ -1,8 +1,8 @@
 import pytest
 
 import cli
-from rewriter.drift import revert_risky
-from rewriter.pipeline import Options, Result, rewrite
+from text_improver.drift import revert_risky
+from text_improver.pipeline import Options, Result, rewrite
 
 
 def test_blocklisted_swap_is_undone_for_that_model_only():
@@ -48,7 +48,7 @@ def test_multiline_latex_is_locked():
 def test_cli_exits_1_and_writes_nothing_on_failure(tmp_path, monkeypatch, capsys):
     src = tmp_path / "essay.txt"
     src.write_text("Some text here.", encoding="utf-8")
-    monkeypatch.setattr("rewriter.pipeline.rewrite", lambda text, opts: Result(text, [], {}, ["gemini unavailable"]))
+    monkeypatch.setattr("text_improver.pipeline.rewrite", lambda text, opts: Result(text, [], {}, ["gemini unavailable"]))
     with pytest.raises(SystemExit) as e:
         cli.main([str(src)])
     assert e.value.code == 1
@@ -62,7 +62,7 @@ def test_cli_reads_piped_utf8_and_writes_utf8():
     from pathlib import Path
 
     text = "The team’s plan works — mostly.\n"
-    p = subprocess.run([sys.executable, "cli.py", "--offline", "--no-phrases", "--no-synonyms", "--no-structure"],
+    p = subprocess.run([sys.executable, "cli.py", "--local", "--skip-c", "--skip-a", "--skip-b"],
                        input=text.encode("utf-8"), capture_output=True, cwd=Path(__file__).resolve().parents[1])
     assert p.returncode == 0
     assert p.stdout.decode("utf-8").replace("\r\n", "\n") == text
@@ -71,6 +71,6 @@ def test_cli_reads_piped_utf8_and_writes_utf8():
 def test_cli_succeeds_and_writes_output(tmp_path, monkeypatch):
     src = tmp_path / "essay.txt"
     src.write_text("Some text here.", encoding="utf-8")
-    monkeypatch.setattr("rewriter.pipeline.rewrite", lambda text, opts: Result("New text here.", [], {}))
+    monkeypatch.setattr("text_improver.pipeline.rewrite", lambda text, opts: Result("New text here.", [], {}))
     cli.main([str(src)])
     assert (tmp_path / "essay.improved.txt").read_text(encoding="utf-8") == "New text here."

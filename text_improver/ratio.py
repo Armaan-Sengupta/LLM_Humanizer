@@ -1,11 +1,4 @@
-"""Single-process port of ZipPy's LZMA detector (Thinkst Applied Research, MIT;
-https://github.com/thinkst/zippy). Same algorithm and prelude text; the
-multiprocessing pool is dropped so it works inside a frozen executable.
-
-Idea: seed LZMA with a corpus of AI-written text. If appending the sample makes
-the stream compress *better* than the prelude alone, the sample resembles the
-AI corpus. The output is a (label, confidence) pair; confidence is small.
-"""
+"""Compression ratio against a fixed reference text."""
 from __future__ import annotations
 
 import lzma
@@ -34,14 +27,14 @@ def _ratio(s: str) -> float:
 
 @lru_cache(maxsize=1)
 def _prelude() -> tuple[str, float]:
-    p = clean((DATA / "zippy-ai-generated.txt").read_text(encoding="utf-8"))
+    p = clean((DATA / "reference.txt").read_text(encoding="utf-8"))
     return p, _ratio(p)
 
 
 def _score_chunk(chunk: str) -> tuple[str, float]:
     prelude, prelude_ratio = _prelude()
     delta = prelude_ratio - _ratio(prelude + chunk)
-    return ("AI" if delta >= 0 else "Human"), abs(delta * 100)
+    return ("a" if delta >= 0 else "b"), abs(delta * 100)
 
 
 def score(text: str, chunk_size: int = 1500) -> tuple[str, float]:
@@ -56,5 +49,5 @@ def score(text: str, chunk_size: int = 1500) -> tuple[str, float]:
     for c in chunks:
         label, conf = _score_chunk(c)
         w = len(c) / max(1, len(contents))
-        total += -conf * w if label == "AI" else conf * w
-    return ("AI" if total < 0 else "Human"), abs(total)
+        total += -conf * w if label == "a" else conf * w
+    return ("a" if total < 0 else "b"), abs(total)

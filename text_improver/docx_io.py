@@ -1,10 +1,4 @@
-"""Rewrite a .docx in place, keeping formatting, images and tables.
-
-Within each paragraph, consecutive runs with identical formatting are merged
-into one logical chunk, rewritten, and written back into the first run of the
-chunk. Runs that contain anything other than text (images, fields, footnote
-references) are left alone, so a chunk never spans them.
-"""
+"""Adjust a .docx in place, keeping formatting, images and tables."""
 from __future__ import annotations
 
 import io

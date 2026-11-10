@@ -2,11 +2,10 @@
 from PyInstaller.utils.hooks import collect_data_files
 from PyInstaller.utils.hooks import collect_all
 
-datas = [('rewriter/data', 'rewriter/data'),
-         # source for `rewriter --setup --web`, which runs the web app from its own venv
-         ('app.py', 'webapp'), ('rewriter', 'webapp/rewriter')]
+datas = [('text_improver/data', 'text_improver/data'),
+         ('app.py', 'webapp'), ('text_improver', 'webapp/text_improver')]
 binaries = []
-hiddenimports = ['rewriter.llm', 'rewriter.zippy_lite', 'rewriter.docx_io', 'rewriter.checker', 'rewriter.pipeline', 'rewriter.setup_cmd']
+hiddenimports = ['text_improver.llm', 'text_improver.ratio', 'text_improver.docx_io', 'text_improver.checker', 'text_improver.pipeline', 'text_improver.setup_cmd']
 datas += collect_data_files('wordfreq')
 datas += collect_data_files('docx')
 tmp_ret = collect_all('en_core_web_sm')
@@ -40,7 +39,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='rewriter',
+    name='text-improver',
     debug=False,
     bootloader_ignore_signals=False,
     strip=True,

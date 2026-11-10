@@ -5,8 +5,8 @@ import textwrap
 
 import pytest
 
-from rewriter.llm import LLMConfig, LLMError, build_prompt, validate
-from rewriter.pipeline import Options, rewrite
+from text_improver.llm import LLMConfig, LLMError, build_prompt, validate
+from text_improver.pipeline import Options, rewrite
 
 TEXT = "The approach shows a large gain of 94.2% on the benchmark (Smith et al., 2021). It is stable when data is noisy."
 
@@ -24,11 +24,11 @@ def _mock(tmp_path, body: str):
 
 GOOD = """
 p = re.search(r"<passage>\\n(.*)\\n</passage>", sys.stdin.read(), re.S).group(1)
-print("<rewritten>" + p.replace("shows", "reveals") + "</rewritten>")
+print("<out>" + p.replace("shows", "reveals") + "</out>")
 """
 DROP = """
 p = re.search(r"<passage>\\n(.*)\\n</passage>", sys.stdin.read(), re.S).group(1)
-print("<rewritten>" + re.sub(r"ZXQ\\d+QXZ", "", p) + "</rewritten>")
+print("<out>" + re.sub(r"ZXQ\\d+QXZ", "", p) + "</out>")
 """
 
 
@@ -46,7 +46,7 @@ def test_validate_rules():
 
 def test_prompt_counts():
     p = build_prompt(" ".join(["word"] * 120) + ". Second. Third. Fourth.", LLMConfig("cli", "haiku", swap_every=12))
-    assert "Replace about 10 words" in p
+    assert "Adjust about 10 words" in p
     assert "<passage>" in p and "ZXQ<number>QXZ" in p
 
 

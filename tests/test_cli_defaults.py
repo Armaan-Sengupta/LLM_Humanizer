@@ -14,19 +14,19 @@ def test_rotation_is_the_default():
 
 
 def test_pattern_overrides_default():
-    assert [p.words for p in _opts("--pattern", "10,20,30").rotation] == [10, 20, 30]
+    assert [p.words for p in _opts("--span", "10,20,30").rotation] == [10, 20, 30]
 
 
 def test_pattern_off_uses_paragraph_mode():
-    opts = _opts("--pattern", "off")
+    opts = _opts("--span", "off")
     assert opts.rotation is None and opts.llm is not None
 
 
 def test_offline_skips_rotation_without_error():
-    opts = _opts("--offline")
+    opts = _opts("--local")
     assert opts.rotation is None and opts.llm is None
 
 
 def test_explicit_pattern_with_offline_is_an_error():
-    with pytest.raises(SystemExit, match="--pattern needs the LLMs"):
-        _opts("--offline", "--pattern", "10,20,30")
+    with pytest.raises(SystemExit, match="--span cannot"):
+        _opts("--local", "--span", "10,20,30")

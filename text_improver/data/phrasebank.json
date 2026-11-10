@@ -1,0 +1,1322 @@
+{
+  "_about": "Phrase adjustments.",
+  "entries": [
+    {
+      "p": "delve into",
+      "r": [
+        "look into",
+        "examine",
+        "explore"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "delve deeper into",
+      "r": [
+        "look more closely at",
+        "examine further"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "delve",
+      "r": [
+        "dig",
+        "look"
+      ],
+      "pos": "VERB",
+      "src": "k"
+    },
+    {
+      "p": "it is important to note that",
+      "r": [
+        "",
+        "note that"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "it be important to note that",
+      "r": [
+        "",
+        "note that"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "it be worth note that",
+      "r": [
+        "",
+        "note that"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "it should be note that",
+      "r": [
+        "",
+        "note that"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "it be crucial to",
+      "r": [
+        "we need to",
+        "it matters to"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "play a crucial role in",
+      "r": [
+        "matter a great deal for",
+        "be central to",
+        "be key to"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "play a pivotal role in",
+      "r": [
+        "be central to",
+        "be key to"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "play a vital role in",
+      "r": [
+        "be central to",
+        "be key to"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "play a key role in",
+      "r": [
+        "be central to",
+        "matter for"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "play a significant role in",
+      "r": [
+        "matter for",
+        "shape"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "shed light on",
+      "r": [
+        "clarify",
+        "explain",
+        "help explain"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "a testament to",
+      "r": [
+        "evidence of",
+        "proof of"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "serve as a testament to",
+      "r": [
+        "show",
+        "demonstrate"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "a rich tapestry of",
+      "r": [
+        "a wide mix of",
+        "a varied set of"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "a tapestry of",
+      "r": [
+        "a mix of",
+        "a blend of"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "in the realm of",
+      "r": [
+        "in",
+        "within"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "the realm of",
+      "r": [
+        "the field of",
+        "the area of"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "navigate the complexity of",
+      "r": [
+        "deal with",
+        "work through",
+        "handle"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "navigate the intricacy of",
+      "r": [
+        "deal with",
+        "work through"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "in today 's fast - pace world",
+      "r": [
+        ""
+      ],
+      "src": "k"
+    },
+    {
+      "p": "in today 's digital age",
+      "r": [
+        "today",
+        "now"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "in today 's world",
+      "r": [
+        "today",
+        "now"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "in the ever - evolve landscape of",
+      "r": [
+        "in",
+        "across"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "ever - evolve",
+      "r": [
+        "changing",
+        "shifting"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "ever - change",
+      "r": [
+        "changing",
+        "shifting"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "embark on",
+      "r": [
+        "start",
+        "begin",
+        "take on"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "a myriad of",
+      "r": [
+        "many",
+        "a wide range of"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "myriad",
+      "r": [
+        "many",
+        "countless"
+      ],
+      "pos": "ADJ",
+      "src": "k"
+    },
+    {
+      "p": "a plethora of",
+      "r": [
+        "many",
+        "plenty of",
+        "a lot of"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "a multitude of",
+      "r": [
+        "many",
+        "a large number of"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "a wide array of",
+      "r": [
+        "many",
+        "a wide range of"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "a diverse array of",
+      "r": [
+        "many kinds of",
+        "a varied range of"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "underscore",
+      "r": [
+        "highlight",
+        "show",
+        "point to"
+      ],
+      "pos": "VERB",
+      "src": "k"
+    },
+    {
+      "p": "showcase",
+      "r": [
+        "show",
+        "display",
+        "demonstrate"
+      ],
+      "pos": "VERB",
+      "src": "k"
+    },
+    {
+      "p": "leverage",
+      "r": [
+        "use",
+        "draw on",
+        "make use of"
+      ],
+      "pos": "VERB",
+      "src": "k"
+    },
+    {
+      "p": "harness",
+      "r": [
+        "use",
+        "draw on",
+        "tap"
+      ],
+      "pos": "VERB",
+      "src": "k"
+    },
+    {
+      "p": "foster",
+      "r": [
+        "encourage",
+        "build",
+        "support"
+      ],
+      "pos": "VERB",
+      "src": "k"
+    },
+    {
+      "p": "bolster",
+      "r": [
+        "strengthen",
+        "support",
+        "back up"
+      ],
+      "pos": "VERB",
+      "src": "k"
+    },
+    {
+      "p": "garner",
+      "r": [
+        "gain",
+        "attract",
+        "earn"
+      ],
+      "pos": "VERB",
+      "src": "k"
+    },
+    {
+      "p": "elucidate",
+      "r": [
+        "explain",
+        "clarify"
+      ],
+      "pos": "VERB",
+      "src": "retext"
+    },
+    {
+      "p": "encompass",
+      "r": [
+        "include",
+        "cover",
+        "span"
+      ],
+      "pos": "VERB",
+      "src": "k"
+    },
+    {
+      "p": "streamline",
+      "r": [
+        "simplify",
+        "speed up"
+      ],
+      "pos": "VERB",
+      "src": "k"
+    },
+    {
+      "p": "empower",
+      "r": [
+        "enable",
+        "allow",
+        "help"
+      ],
+      "pos": "VERB",
+      "src": "k"
+    },
+    {
+      "p": "elevate",
+      "r": [
+        "raise",
+        "improve",
+        "lift"
+      ],
+      "pos": "VERB",
+      "src": "k"
+    },
+    {
+      "p": "unveil",
+      "r": [
+        "reveal",
+        "show",
+        "present"
+      ],
+      "pos": "VERB",
+      "src": "k"
+    },
+    {
+      "p": "unravel",
+      "r": [
+        "untangle",
+        "work out",
+        "explain"
+      ],
+      "pos": "VERB",
+      "src": "k"
+    },
+    {
+      "p": "grapple with",
+      "r": [
+        "struggle with",
+        "deal with",
+        "wrestle with"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "align with",
+      "r": [
+        "fit",
+        "match",
+        "agree with",
+        "fit with"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "resonate with",
+      "r": [
+        "appeal to",
+        "connect with",
+        "strike a chord with"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "utilize",
+      "r": [
+        "use"
+      ],
+      "pos": "VERB",
+      "src": "retext"
+    },
+    {
+      "p": "utilise",
+      "r": [
+        "use"
+      ],
+      "pos": "VERB",
+      "src": "retext"
+    },
+    {
+      "p": "utilization",
+      "r": [
+        "use"
+      ],
+      "pos": "NOUN",
+      "src": "retext"
+    },
+    {
+      "p": "commence",
+      "r": [
+        "begin",
+        "start"
+      ],
+      "pos": "VERB",
+      "src": "retext"
+    },
+    {
+      "p": "endeavor",
+      "r": [
+        "effort",
+        "attempt"
+      ],
+      "pos": "NOUN",
+      "src": "k"
+    },
+    {
+      "p": "endeavour",
+      "r": [
+        "effort",
+        "attempt"
+      ],
+      "pos": "NOUN",
+      "src": "k"
+    },
+    {
+      "p": "ascertain",
+      "r": [
+        "find out",
+        "establish",
+        "determine"
+      ],
+      "pos": "VERB",
+      "src": "retext"
+    },
+    {
+      "p": "necessitate",
+      "r": [
+        "require",
+        "call for"
+      ],
+      "pos": "VERB",
+      "src": "retext"
+    },
+    {
+      "p": "expedite",
+      "r": [
+        "speed up",
+        "hasten"
+      ],
+      "pos": "VERB",
+      "src": "retext"
+    },
+    {
+      "p": "ameliorate",
+      "r": [
+        "improve",
+        "ease"
+      ],
+      "pos": "VERB",
+      "src": "retext"
+    },
+    {
+      "p": "alleviate",
+      "r": [
+        "ease",
+        "reduce",
+        "relieve"
+      ],
+      "pos": "VERB",
+      "src": "retext"
+    },
+    {
+      "p": "in order to",
+      "r": [
+        "to"
+      ],
+      "src": "retext"
+    },
+    {
+      "p": "due to the fact that",
+      "r": [
+        "because",
+        "since"
+      ],
+      "src": "retext"
+    },
+    {
+      "p": "owe to the fact that",
+      "r": [
+        "because",
+        "since"
+      ],
+      "src": "retext"
+    },
+    {
+      "p": "in light of the fact that",
+      "r": [
+        "because",
+        "since"
+      ],
+      "src": "retext"
+    },
+    {
+      "p": "for the purpose of",
+      "r": [
+        "to",
+        "for"
+      ],
+      "src": "retext"
+    },
+    {
+      "p": "with respect to",
+      "r": [
+        "about",
+        "regarding",
+        "on"
+      ],
+      "src": "retext"
+    },
+    {
+      "p": "in regard to",
+      "r": [
+        "about",
+        "regarding",
+        "on"
+      ],
+      "src": "retext"
+    },
+    {
+      "p": "with regard to",
+      "r": [
+        "about",
+        "regarding",
+        "on"
+      ],
+      "src": "retext"
+    },
+    {
+      "p": "in the event that",
+      "r": [
+        "if"
+      ],
+      "src": "retext"
+    },
+    {
+      "p": "prior to",
+      "r": [
+        "before"
+      ],
+      "src": "retext"
+    },
+    {
+      "p": "subsequent to",
+      "r": [
+        "after"
+      ],
+      "src": "retext"
+    },
+    {
+      "p": "in excess of",
+      "r": [
+        "more than",
+        "over"
+      ],
+      "src": "retext"
+    },
+    {
+      "p": "a number of",
+      "r": [
+        "several",
+        "some"
+      ],
+      "src": "retext"
+    },
+    {
+      "p": "at the present time",
+      "r": [
+        "now",
+        "currently",
+        "at present"
+      ],
+      "src": "retext"
+    },
+    {
+      "p": "in the near future",
+      "r": [
+        "soon",
+        "shortly"
+      ],
+      "src": "retext"
+    },
+    {
+      "p": "in an effort to",
+      "r": [
+        "to",
+        "trying to"
+      ],
+      "src": "retext"
+    },
+    {
+      "p": "in all likelihood",
+      "r": [
+        "probably",
+        "most likely"
+      ],
+      "src": "retext"
+    },
+    {
+      "p": "first and foremost",
+      "r": [
+        "first",
+        "above all"
+      ],
+      "src": "retext"
+    },
+    {
+      "p": "each and every",
+      "r": [
+        "each",
+        "every"
+      ],
+      "src": "retext"
+    },
+    {
+      "p": "whether or not",
+      "r": [
+        "whether"
+      ],
+      "src": "retext"
+    },
+    {
+      "p": "until such time as",
+      "r": [
+        "until"
+      ],
+      "src": "retext"
+    },
+    {
+      "p": "has the ability to",
+      "r": [
+        "can"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "have the ability to",
+      "r": [
+        "can"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "be able to",
+      "r": [
+        "can"
+      ],
+      "tag_only": [
+        "VBZ",
+        "VBP"
+      ],
+      "no_inflect": true,
+      "src": "k"
+    },
+    {
+      "p": "crucial",
+      "r": [
+        "key",
+        "essential",
+        "vital",
+        "critical"
+      ],
+      "pos": "ADJ",
+      "src": "k"
+    },
+    {
+      "p": "pivotal",
+      "r": [
+        "key",
+        "central",
+        "decisive"
+      ],
+      "pos": "ADJ",
+      "src": "k"
+    },
+    {
+      "p": "paramount",
+      "r": [
+        "essential",
+        "vital",
+        "of the highest importance"
+      ],
+      "pos": "ADJ",
+      "src": "k"
+    },
+    {
+      "p": "intricate",
+      "r": [
+        "complex",
+        "detailed",
+        "elaborate"
+      ],
+      "pos": "ADJ",
+      "src": "k"
+    },
+    {
+      "p": "meticulous",
+      "r": [
+        "careful",
+        "thorough",
+        "painstaking"
+      ],
+      "pos": "ADJ",
+      "src": "k"
+    },
+    {
+      "p": "meticulously",
+      "r": [
+        "carefully",
+        "thoroughly"
+      ],
+      "pos": "ADV",
+      "src": "k"
+    },
+    {
+      "p": "robust",
+      "r": [
+        "strong",
+        "reliable",
+        "solid"
+      ],
+      "pos": "ADJ",
+      "src": "k"
+    },
+    {
+      "p": "seamless",
+      "r": [
+        "smooth",
+        "effortless"
+      ],
+      "pos": "ADJ",
+      "src": "k"
+    },
+    {
+      "p": "seamlessly",
+      "r": [
+        "smoothly",
+        "easily"
+      ],
+      "pos": "ADV",
+      "src": "k"
+    },
+    {
+      "p": "commendable",
+      "r": [
+        "admirable",
+        "praiseworthy",
+        "good"
+      ],
+      "pos": "ADJ",
+      "src": "k"
+    },
+    {
+      "p": "multifaceted",
+      "r": [
+        "complex",
+        "many-sided",
+        "varied"
+      ],
+      "pos": "ADJ",
+      "src": "k"
+    },
+    {
+      "p": "nuanced",
+      "r": [
+        "subtle",
+        "careful",
+        "fine-grained"
+      ],
+      "pos": "ADJ",
+      "src": "k"
+    },
+    {
+      "p": "holistic",
+      "r": [
+        "overall",
+        "whole",
+        "integrated"
+      ],
+      "pos": "ADJ",
+      "src": "k"
+    },
+    {
+      "p": "comprehensive",
+      "r": [
+        "thorough",
+        "complete",
+        "full",
+        "wide-ranging"
+      ],
+      "pos": "ADJ",
+      "src": "k"
+    },
+    {
+      "p": "groundbreaking",
+      "r": [
+        "pioneering",
+        "innovative",
+        "new"
+      ],
+      "pos": "ADJ",
+      "src": "k"
+    },
+    {
+      "p": "cutting - edge",
+      "r": [
+        "advanced",
+        "state-of-the-art",
+        "leading"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "burgeon",
+      "r": [
+        "growing",
+        "expanding",
+        "fast-growing"
+      ],
+      "pos": "VERB",
+      "tag_only": [
+        "VBG"
+      ],
+      "no_inflect": true,
+      "src": "k"
+    },
+    {
+      "p": "formidable",
+      "r": [
+        "serious",
+        "daunting",
+        "powerful"
+      ],
+      "pos": "ADJ",
+      "src": "k"
+    },
+    {
+      "p": "noteworthy",
+      "r": [
+        "notable",
+        "remarkable",
+        "worth noting"
+      ],
+      "pos": "ADJ",
+      "src": "k"
+    },
+    {
+      "p": "invaluable",
+      "r": [
+        "very useful",
+        "extremely valuable"
+      ],
+      "pos": "ADJ",
+      "src": "k"
+    },
+    {
+      "p": "unparalleled",
+      "r": [
+        "unmatched",
+        "unequalled"
+      ],
+      "pos": "ADJ",
+      "src": "k"
+    },
+    {
+      "p": "profound",
+      "r": [
+        "deep",
+        "far-reaching",
+        "major"
+      ],
+      "pos": "ADJ",
+      "src": "k"
+    },
+    {
+      "p": "vibrant",
+      "r": [
+        "lively",
+        "active",
+        "dynamic"
+      ],
+      "pos": "ADJ",
+      "src": "k"
+    },
+    {
+      "p": "notably",
+      "r": [
+        "in particular",
+        "especially"
+      ],
+      "pos": "ADV",
+      "src": "k"
+    },
+    {
+      "p": "additionally",
+      "r": [
+        "also",
+        "in addition"
+      ],
+      "pos": "ADV",
+      "src": "k"
+    },
+    {
+      "p": "consequently",
+      "r": [
+        "as a result",
+        "so",
+        "therefore"
+      ],
+      "pos": "ADV",
+      "src": "retext"
+    },
+    {
+      "p": "subsequently",
+      "r": [
+        "later",
+        "afterwards",
+        "then"
+      ],
+      "pos": "ADV",
+      "src": "retext"
+    },
+    {
+      "p": "predominantly",
+      "r": [
+        "mainly",
+        "mostly",
+        "largely"
+      ],
+      "pos": "ADV",
+      "src": "k"
+    },
+    {
+      "p": "approximately",
+      "r": [
+        "about",
+        "around",
+        "roughly"
+      ],
+      "pos": "ADV",
+      "src": "retext"
+    },
+    {
+      "p": "numerous",
+      "r": [
+        "many",
+        "a large number of"
+      ],
+      "pos": "ADJ",
+      "src": "retext"
+    },
+    {
+      "p": "realm",
+      "r": [
+        "field",
+        "area",
+        "domain"
+      ],
+      "pos": "NOUN",
+      "src": "k"
+    },
+    {
+      "p": "intricacy",
+      "r": [
+        "complexity",
+        "detail"
+      ],
+      "pos": "NOUN",
+      "src": "k"
+    },
+    {
+      "p": "methodology",
+      "r": [
+        "method",
+        "approach"
+      ],
+      "pos": "NOUN",
+      "src": "retext"
+    },
+    {
+      "p": "advancement",
+      "r": [
+        "advance",
+        "progress",
+        "development"
+      ],
+      "pos": "NOUN",
+      "src": "k"
+    },
+    {
+      "p": "insight",
+      "r": [
+        "understanding",
+        "clue",
+        "lesson"
+      ],
+      "pos": "NOUN",
+      "src": "k"
+    },
+    {
+      "p": "valuable insight",
+      "r": [
+        "useful understanding",
+        "useful lessons",
+        "clear evidence"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "serve as",
+      "r": [
+        "act as",
+        "work as",
+        "function as"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "aim to",
+      "r": [
+        "try to",
+        "set out to",
+        "seek to"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "strive to",
+      "r": [
+        "try to",
+        "work to",
+        "seek to"
+      ],
+      "src": "k"
+    },
+    {
+      "p": "in conclusion ,",
+      "r": [
+        "Overall,",
+        "To sum up,",
+        "In short,"
+      ],
+      "sent_start": true,
+      "src": "k"
+    },
+    {
+      "p": "in summary ,",
+      "r": [
+        "Overall,",
+        "In short,",
+        "To sum up,"
+      ],
+      "sent_start": true,
+      "src": "k"
+    },
+    {
+      "p": "ultimately ,",
+      "r": [
+        "In the end,",
+        "Finally,",
+        ""
+      ],
+      "sent_start": true,
+      "src": "k"
+    },
+    {
+      "p": "moreover ,",
+      "r": [
+        "Also,",
+        "Besides,",
+        "What is more,",
+        ""
+      ],
+      "sent_start": true,
+      "src": "k"
+    },
+    {
+      "p": "furthermore ,",
+      "r": [
+        "Also,",
+        "Beyond this,",
+        "In addition,",
+        ""
+      ],
+      "sent_start": true,
+      "src": "k"
+    },
+    {
+      "p": "additionally ,",
+      "r": [
+        "Also,",
+        "On top of this,",
+        "In addition,",
+        ""
+      ],
+      "sent_start": true,
+      "src": "k"
+    },
+    {
+      "p": "in addition ,",
+      "r": [
+        "Also,",
+        "Besides,",
+        ""
+      ],
+      "sent_start": true,
+      "src": "k"
+    },
+    {
+      "p": "consequently ,",
+      "r": [
+        "As a result,",
+        "So",
+        "Because of this,"
+      ],
+      "sent_start": true,
+      "src": "k"
+    },
+    {
+      "p": "notably ,",
+      "r": [
+        "In particular,",
+        "Of note,",
+        ""
+      ],
+      "sent_start": true,
+      "src": "k"
+    },
+    {
+      "p": "importantly ,",
+      "r": [
+        "Crucially,",
+        "Above all,",
+        ""
+      ],
+      "sent_start": true,
+      "src": "k"
+    },
+    {
+      "p": "overall ,",
+      "r": [
+        "On the whole,",
+        "In general,",
+        "All in all,"
+      ],
+      "sent_start": true,
+      "src": "k"
+    },
+    {
+      "p": "nevertheless ,",
+      "r": [
+        "Still,",
+        "Even so,",
+        "Yet"
+      ],
+      "sent_start": true,
+      "src": "retext"
+    },
+    {
+      "p": "nonetheless ,",
+      "r": [
+        "Still,",
+        "Even so,",
+        "Yet"
+      ],
+      "sent_start": true,
+      "src": "k"
+    },
+    {
+      "p": "thus ,",
+      "r": [
+        "So",
+        "As a result,",
+        "Hence,"
+      ],
+      "sent_start": true,
+      "src": "k"
+    },
+    {
+      "p": "therefore ,",
+      "r": [
+        "So",
+        "As a result,",
+        "For this reason,"
+      ],
+      "sent_start": true,
+      "src": "retext"
+    },
+    {
+      "p": "however ,",
+      "r": [
+        "But",
+        "Yet",
+        "Still,",
+        "That said,"
+      ],
+      "sent_start": true,
+      "src": "retext"
+    },
+    {
+      "p": "in essence ,",
+      "r": [
+        "Basically,",
+        "In short,",
+        "Put simply,"
+      ],
+      "sent_start": true,
+      "src": "k"
+    },
+    {
+      "p": "interestingly ,",
+      "r": [
+        "Curiously,",
+        "",
+        "Surprisingly,"
+      ],
+      "sent_start": true,
+      "src": "k"
+    },
+    {
+      "p": "indeed ,",
+      "r": [
+        "In fact,",
+        ""
+      ],
+      "sent_start": true,
+      "src": "k"
+    }
+  ]
+}

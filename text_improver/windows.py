@@ -20,7 +20,7 @@ _CONTEXT_CHARS = 2000  # upper bound on the text scanned to find them
 @dataclass(frozen=True)
 class Phase:
     words: int
-    cfg: object | None = None  # rewriter.llm.LLMConfig; None leaves the text untouched
+    cfg: object | None = None  # text_improver.llm.LLMConfig; None leaves the text untouched
     label: str = "keep"
 
 
@@ -37,11 +37,11 @@ def parse_pattern(spec: str) -> tuple[int, int, int]:
     try:
         values = tuple(int(p) for p in spec.split(","))
     except ValueError:
-        raise ValueError(f"pattern must be three whole numbers like 100,150,150, got {spec!r}") from None
+        raise ValueError(f"span must be three whole numbers like 100,150,150, got {spec!r}") from None
     if len(values) != 3 or min(values) < 0:
-        raise ValueError(f"pattern must be three non-negative numbers like 100,150,150, got {spec!r}")
+        raise ValueError(f"span must be three non-negative numbers like 100,150,150, got {spec!r}")
     if values[1] + values[2] == 0:
-        raise ValueError("pattern must give at least one model some words")
+        raise ValueError("span must give at least one part some words")
     return values  # type: ignore[return-value]
 
 

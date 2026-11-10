@@ -1,11 +1,4 @@
-"""Word- and phrase-level rewriting.
-
-Two passes over one spaCy parse:
-  1. Phrase bank: curated replacements for wordy phrases and AI-marker
-     vocabulary (high confidence, applied often).
-  2. Synonyms: PPDB ∩ WordNet single-word swaps (lower confidence, applied
-     sparingly and only to mid-frequency content words).
-"""
+"""Word- and phrase-level adjustments."""
 from __future__ import annotations
 
 import random

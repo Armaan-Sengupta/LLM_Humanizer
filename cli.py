@@ -36,7 +36,7 @@ def _resolve(value: str | None, force_text: bool) -> tuple[str, Path | None]:
             is_file = False
         if is_file:
             if p.suffix.lower() == ".docx":
-                from rewriter.docx_io import docx_text
+                from text_improver.docx_io import docx_text
 
                 return docx_text(p.read_bytes()), p
             return p.read_text(encoding="utf-8"), p
@@ -44,8 +44,8 @@ def _resolve(value: str | None, force_text: bool) -> tuple[str, Path | None]:
 
 
 def _opts(a):
-    from rewriter.llm import LLMConfig
-    from rewriter.pipeline import Options
+    from text_improver.llm import LLMConfig
+    from text_improver.pipeline import Options
 
     llm = None
     if a.llm != "off":
@@ -53,9 +53,9 @@ def _opts(a):
                         restructure_every=a.restructure_every)
     rotation = None
     if llm is None and a.pattern not in (None, "off"):
-        sys.exit("error: --pattern needs the LLMs, so it can't be combined with --offline or --llm off")
+        sys.exit("error: --span cannot be combined with --local or --engine off")
     if llm is not None and a.pattern != "off":
-        from rewriter.windows import DEFAULT_PATTERN, Phase, parse_pattern
+        from text_improver.windows import DEFAULT_PATTERN, Phase, parse_pattern
 
         try:
             keep, haiku, gemini = parse_pattern(a.pattern or DEFAULT_PATTERN)
@@ -73,13 +73,13 @@ def _opts(a):
 
 
 def cmd_rewrite(a) -> None:
-    from rewriter.pipeline import rewrite
+    from text_improver.pipeline import rewrite
 
     opts = _opts(a)
     text, path = _resolve(a.input, a.text)
 
     if path is not None and path.suffix.lower() == ".docx":
-        from rewriter.docx_io import rewrite_docx
+        from text_improver.docx_io import rewrite_docx
 
         if a.output == "-":
             sys.exit("error: .docx output can't go to stdout; use -o FILE.docx")
@@ -116,20 +116,20 @@ def _report(changes, out, log: bool) -> None:
 
 
 def cmd_check(a) -> None:
-    from rewriter.checker import analyze
+    from text_improver.checker import analyze
 
     text, _ = _resolve(a.input, a.text)
     print(json.dumps(analyze(text).as_dict(), indent=2))
 
 
 def cmd_compare(a) -> None:
-    from rewriter.checker import analyze, change_ratio
+    from text_improver.checker import analyze, change_ratio
 
     x, _ = _resolve(a.original, False)
     y, _ = _resolve(a.improved, False)
     rx, ry = analyze(x).as_dict(), analyze(y).as_dict()
     print(f"{'metric':18}{'original':>14}{'improved':>14}")
-    for k in ["words", "zippy_label", "zippy_confidence", "markers_per_1k", "burstiness", "mattr"]:
+    for k in ["words", "reading", "weight", "notes_per_1k", "spread", "variety"]:
         print(f"{k:18}{str(rx[k]):>14}{str(ry[k]):>14}")
     print(f"{'words improved':18}{'':>14}{change_ratio(x, y):>14.1%}")
 
@@ -154,20 +154,20 @@ def build_parser() -> argparse.ArgumentParser:
     r.add_argument("-s", "--seed", type=int, help=argparse.SUPPRESS)
     r.add_argument("-p", "--protect", help=argparse.SUPPRESS)
     r.add_argument("--latex", action="store_true", help=argparse.SUPPRESS)
-    r.add_argument("--no-synonyms", action="store_true", help=argparse.SUPPRESS)
-    r.add_argument("--no-structure", action="store_true", help=argparse.SUPPRESS)
-    r.add_argument("--no-phrases", action="store_true", help=argparse.SUPPRESS)
-    r.add_argument("--keep-metadata", action="store_true", help=argparse.SUPPRESS)
+    r.add_argument("--skip-a", dest="no_synonyms", action="store_true", help=argparse.SUPPRESS)
+    r.add_argument("--skip-b", dest="no_structure", action="store_true", help=argparse.SUPPRESS)
+    r.add_argument("--skip-c", dest="no_phrases", action="store_true", help=argparse.SUPPRESS)
+    r.add_argument("--keep", dest="keep_metadata", action="store_true", help=argparse.SUPPRESS)
     r.add_argument("-l", "--log", action="store_true", help=argparse.SUPPRESS)
     g = r.add_argument_group("options")
-    g.add_argument("--llm", choices=["auto", "cli", "api", "off"], default="auto", help=argparse.SUPPRESS)
-    g.add_argument("--offline", dest="llm", action="store_const", const="off", help=argparse.SUPPRESS)
-    g.add_argument("--model", help=argparse.SUPPRESS)
-    g.add_argument("--swap-every", type=int, default=12, metavar="N", help=argparse.SUPPRESS)
-    g.add_argument("--restructure-every", type=int, default=4, metavar="N", help=argparse.SUPPRESS)
+    g.add_argument("--engine", dest="llm", choices=["auto", "cli", "api", "off"], default="auto", help=argparse.SUPPRESS)
+    g.add_argument("--local", dest="llm", action="store_const", const="off", help=argparse.SUPPRESS)
+    g.add_argument("--name", dest="model", help=argparse.SUPPRESS)
+    g.add_argument("--n1", dest="swap_every", type=int, default=12, metavar="N", help=argparse.SUPPRESS)
+    g.add_argument("--n2", dest="restructure_every", type=int, default=4, metavar="N", help=argparse.SUPPRESS)
     g.add_argument("--workers", type=int, default=4, help=argparse.SUPPRESS)
-    g.add_argument("--pattern", metavar="X,Y,Z", help=argparse.SUPPRESS)
-    g.add_argument("--gemini-model", help=argparse.SUPPRESS)
+    g.add_argument("--span", dest="pattern", metavar="X,Y,Z", help=argparse.SUPPRESS)
+    g.add_argument("--name-b", dest="gemini_model", help=argparse.SUPPRESS)
     r.set_defaults(fn=cmd_rewrite)
 
     c = sub.add_parser("check", help=argparse.SUPPRESS)
@@ -184,8 +184,8 @@ def build_parser() -> argparse.ArgumentParser:
 
 def build_setup_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(prog="text-improver --setup",
-                                 description="Install the program and check that the claude and agy "
-                                             "CLIs are signed in (Debian/Linux). Run as your normal user.")
+                                 description="Install text-improver and check that both helpers are signed in. "
+                                             "Run as your normal user.")
     ap.add_argument("--setup", action="store_true", help=argparse.SUPPRESS)
     ap.add_argument("--web", action="store_true", help="also run the web app as a systemd user service")
     ap.add_argument("--port", type=int, default=8501, help="web app port, on 127.0.0.1 only (default 8501)")
@@ -195,7 +195,7 @@ def build_setup_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> None:
     argv = list(sys.argv[1:] if argv is None else argv)
     if "--setup" in argv:
-        from rewriter.setup_cmd import run
+        from text_improver.setup_cmd import run
 
         a = build_setup_parser().parse_args(argv)
         sys.exit(run(web=a.web, port=a.port))
