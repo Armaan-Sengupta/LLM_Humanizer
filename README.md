@@ -8,7 +8,9 @@ It rewrites wordy or AI-sounding phrasing with local rules, then uses Claude Hai
 
 ```bash
 chmod +x rewriter
+./rewriter --setup                    # first run: install to ~/.local/bin and check both sign-ins
 ./rewriter "Moreover, it is important to note that we utilize a robust methodology."
+./rewriter                            # paste text, then Ctrl+D on a new line
 ./rewriter essay.txt                  # writes essay.improved.txt
 ./rewriter essay.txt -o -             # print to stdout instead
 ./rewriter paper.docx                 # writes paper.improved.docx, formatting kept
@@ -24,18 +26,37 @@ cat essay.txt | ./rewriter            # stdin -> stdout
 ./rewriter compare essay.txt essay.improved.txt
 ```
 
-If you pass text or pipe it in, the output goes to stdout. If you pass a file, the output goes to `<name>.improved.<ext>`. The status line (and with `-l`, each improvement) goes to stderr, so pipes stay clean.
+`improve` is the default command, so `./rewriter improve essay.txt` and `./rewriter essay.txt` do the same thing. If you pass text, paste it or pipe it in, the output goes to stdout. If you pass a file, the output goes to `<name>.improved.<ext>`. The status line (and with `-l`, each change) goes to stderr, so pipes stay clean.
+
+To paste instead of making a file, run it with no input: paste, then press Ctrl+D on a new line (Ctrl+Z then Enter on Windows). On Windows you can also improve whatever is on the clipboard and put the result back:
+
+```powershell
+$OutputEncoding = [Console]::OutputEncoding = [Text.UTF8Encoding]::new()   # once per window, keeps quotes and dashes
+Get-Clipboard -Raw | python cli.py | Set-Clipboard
+```
 
 ### From source
 
 ```bash
+python -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 python -m spacy download en_core_web_sm
 python cli.py "some text"
-streamlit run app.py      # optional web UI with a colour diff and a .docx tab
-pytest tests              # LLM tests use mocks, so no login is needed
-./build_linux.sh          # rebuild dist/rewriter
+streamlit run app.py               # optional web UI with a colour diff and a .docx tab
+pytest tests                       # model calls are mocked, so no sign-in is needed
+python cli.py --setup              # check that claude and agy are signed in
 ```
+
+### Building the binary
+
+The binary has to be built on Linux, for example on the server itself or in WSL:
+
+```bash
+./build_linux.sh                   # writes dist/rewriter (about 130 MB)
+```
+
+The first build takes a few minutes and creates `.buildenv/`. Building from `/mnt/c` in WSL is slow, so copy the repo into the Linux filesystem first. A binary built on an older Linux than the server is always safe, and Ubuntu 24.04 builds run on Debian 13.
 
 ## LLM mode with `--pattern off` (stages 4–5 via Claude Haiku)
 
@@ -98,7 +119,14 @@ The prompts also tell both models to keep nouns for people, groups and roles, an
 
 ## Deploying on Debian
 
-Build the binary (`./build_linux.sh`) and copy `dist/rewriter` to the server. Sign in to `claude` and `agy` as the user who will run the tool, then:
+Build the binary (`./build_linux.sh`) and copy `dist/rewriter` to the server. Sign in to `claude` and `agy` as the user who will run the tool:
+
+```bash
+curl -fsSL https://claude.ai/install.sh | bash   # install the claude CLI, then run `claude` to sign in
+agy                                              # sign in to Antigravity (install it from antigravity.google)
+```
+
+On a server without a browser, `claude` prints a link to open on another machine. `claude setup-token` creates a long-lived token if you'd rather not sign in interactively. Then:
 
 ```bash
 ./rewriter --setup              # install ~/.local/bin/rewriter and check both CLIs
