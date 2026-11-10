@@ -52,7 +52,7 @@ def test_cli_exits_1_and_writes_nothing_on_failure(tmp_path, monkeypatch, capsys
     with pytest.raises(SystemExit) as e:
         cli.main([str(src)])
     assert e.value.code == 1
-    assert not (tmp_path / "essay.rewritten.txt").exists()
+    assert not (tmp_path / "essay.improved.txt").exists()
     assert capsys.readouterr().err == ""
 
 
@@ -73,4 +73,4 @@ def test_cli_succeeds_and_writes_output(tmp_path, monkeypatch):
     src.write_text("Some text here.", encoding="utf-8")
     monkeypatch.setattr("rewriter.pipeline.rewrite", lambda text, opts: Result("New text here.", [], {}))
     cli.main([str(src)])
-    assert (tmp_path / "essay.rewritten.txt").read_text(encoding="utf-8") == "New text here."
+    assert (tmp_path / "essay.improved.txt").read_text(encoding="utf-8") == "New text here."

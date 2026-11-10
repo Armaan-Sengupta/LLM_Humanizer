@@ -9,22 +9,22 @@ It rewrites wordy or AI-sounding phrasing with local rules, then uses Claude Hai
 ```bash
 chmod +x rewriter
 ./rewriter "Moreover, it is important to note that we utilize a robust methodology."
-./rewriter essay.txt                  # writes essay.rewritten.txt
+./rewriter essay.txt                  # writes essay.improved.txt
 ./rewriter essay.txt -o -             # print to stdout instead
-./rewriter paper.docx                 # writes paper.rewritten.docx, formatting kept
+./rewriter paper.docx                 # writes paper.improved.docx, formatting kept
 ./rewriter paper.tex                  # LaTeX-aware, preamble untouched
 cat essay.txt | ./rewriter            # stdin -> stdout
 ./rewriter -t "notes.txt"             # treat the argument as text even if that file exists
 
-./rewriter essay.txt -l               # log every change
+./rewriter essay.txt -l               # log each improvement
 ./rewriter essay.txt -p "Kalman filter,LiDAR"   # protected terms
 ./rewriter essay.txt --offline -i 0.8 -s 42     # local rules: intensity 0..1, fixed seed
 
 ./rewriter check essay.txt            # local diagnostics (JSON)
-./rewriter compare essay.txt essay.rewritten.txt
+./rewriter compare essay.txt essay.improved.txt
 ```
 
-If you pass text or pipe it in, the output goes to stdout. If you pass a file, the output goes to `<name>.rewritten.<ext>`. The change count (and with `-l`, each change) goes to stderr, so pipes stay clean.
+If you pass text or pipe it in, the output goes to stdout. If you pass a file, the output goes to `<name>.improved.<ext>`. The status line (and with `-l`, each improvement) goes to stderr, so pipes stay clean.
 
 ### From source
 
@@ -94,18 +94,20 @@ The prompts also tell both models to keep nouns for people, groups and roles, an
 
 ## Exit status
 
-`0` on success. `1` if a model was unavailable or couldn't rewrite its part, in which case nothing is printed and no file is written. `--offline` runs never fail this way.
+`0` on success. `1` if a model was unavailable or couldn't improve its part, in which case nothing is printed and no file is written. `--offline` runs never fail this way.
 
 ## Deploying on Debian
 
-Build the binary (`./build_linux.sh`), copy the repo to the server, sign in to both CLIs as the user who will run the tool, then:
+Build the binary (`./build_linux.sh`) and copy `dist/rewriter` to the server. Sign in to `claude` and `agy` as the user who will run the tool, then:
 
 ```bash
-deploy/setup_debian.sh          # install ~/.local/bin/rewriter and check both CLIs
-deploy/setup_debian.sh --web    # also run the web app as a systemd user service
+./rewriter --setup              # install ~/.local/bin/rewriter and check both CLIs
+./rewriter --setup --web        # also run the web app as a systemd user service
 ```
 
-The script installs the binary, then checks that `claude` and `agy` are installed, signed in and answering, and that `agy` has no MCP servers configured (they can make `agy -p` hang). With `--web`, it installs the app in `~/.local/share/rewriter` and starts `rewriter-web.service` on `127.0.0.1:8501` (`--port` to change). It only listens locally: use `ssh -L 8501:127.0.0.1:8501 user@server` to reach it. It exits with 1 if any check fails.
+`--setup` copies the binary to `~/.local/bin/rewriter`. It then checks that `claude` and `agy` are installed, signed in and answering, by sending a tiny prompt through the same code a rewrite uses. It also checks that `agy` has no MCP servers configured, since they can make `agy -p` hang. It exits with 1 if any check fails.
+
+With `--web`, the binary unpacks the web app's source into `~/.local/share/rewriter`, creates a Python environment there (this needs `python3-venv`), and starts `rewriter-web.service` on `127.0.0.1:8501` (`--port` to change). It only listens locally, so reach it with `ssh -L 8501:127.0.0.1:8501 user@server`. Run it as your normal user, not root.
 
 ## How it works
 
@@ -162,11 +164,11 @@ rewriter/
   llm.py            Claude Haiku and Gemini (agy) backends, prompts, validation
   windows.py        sentence-aligned window rotation (--pattern)
   drift.py          undoes model swaps likely to change meaning
+  setup_cmd.py      rewriter --setup (install and checks on Linux)
   checker.py zippy_lite.py
   data/             phrasebank.json, synonyms.json, blocklists, marker lists
 scripts/build_data.py
 rewriter.spec build_linux.sh
-deploy/setup_debian.sh
 tests/
 ```
 
