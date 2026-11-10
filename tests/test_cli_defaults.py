@@ -4,7 +4,7 @@ import cli
 
 
 def _opts(*args):
-    return cli._opts(cli.build_parser().parse_args(["rewrite", "text", *args]))
+    return cli._opts(cli.build_parser().parse_args(["improve", "text", *args]))
 
 
 def test_rotation_is_the_default():

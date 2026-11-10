@@ -7,29 +7,29 @@ from rewriter.checker import analyze, change_ratio, word_diff_html
 from rewriter.pipeline import Options, rewrite
 from rewriter.windows import DEFAULT_PATTERN, Phase, parse_pattern
 
-st.set_page_config(page_title="Local Rewriter", layout="wide")
-st.title("Local Rewriter")
+st.set_page_config(page_title="Improve text", layout="wide")
+st.title("Improve text")
 st.caption("Everything runs on this machine. Nothing is uploaded.")
 
 with st.sidebar:
     intensity = st.slider("Intensity", 0.0, 1.0, 0.5, 0.05)
     seed = st.number_input("Seed (0 = random)", min_value=0, value=0, step=1)
     phrases = st.checkbox("Phrase bank (wordy phrases, AI-marker words)", True)
-    synonyms = st.checkbox("Synonym swaps (riskier: review the diff)", True)
-    structure = st.checkbox("Sentence restructuring", True)
+    synonyms = st.checkbox("Word improvements (riskier: review the diff)", True)
+    structure = st.checkbox("Sentence improvements", True)
     latex = st.checkbox("LaTeX-aware", False)
     protect_quotes = st.checkbox("Never touch direct quotes", True)
     protected = st.text_area("Protected terms (comma-separated)", "")
     st.divider()
     llm_mode = st.selectbox("Stages 4-5 engine", ["auto (Claude Haiku if available)", "claude CLI", "Anthropic API", "off (local rules)"])
-    swap_every = st.slider("LLM: one word swap per N words", 6, 25, 12)
-    restructure_every = st.slider("LLM: restructure one sentence in N", 2, 8, 4)
+    swap_every = st.slider("LLM: improve one word per N words", 6, 25, 12)
+    restructure_every = st.slider("LLM: improve one sentence in N", 2, 8, 4)
     st.divider()
     use_rotation = st.checkbox("Rotate windows: unchanged, then Haiku, then Gemini", True)
     _keep, _haiku, _gemini = parse_pattern(DEFAULT_PATTERN)
     keep_words = st.number_input("Words left unchanged", min_value=0, value=_keep, step=10, disabled=not use_rotation)
-    haiku_words = st.number_input("Words reworded by Haiku", min_value=0, value=_haiku, step=10, disabled=not use_rotation)
-    gemini_words = st.number_input("Words reworded by Gemini", min_value=0, value=_gemini, step=10, disabled=not use_rotation)
+    haiku_words = st.number_input("Words improved by Haiku", min_value=0, value=_haiku, step=10, disabled=not use_rotation)
+    gemini_words = st.number_input("Words improved by Gemini", min_value=0, value=_gemini, step=10, disabled=not use_rotation)
 
 from rewriter.llm import LLMConfig
 
@@ -58,36 +58,36 @@ tab_text, tab_docx, tab_check = st.tabs(["Text", "Word (.docx)", "Checker"])
 
 with tab_text:
     src = st.text_area("Input", height=260)
-    if st.button("Rewrite", type="primary") and src.strip():
+    if st.button("Improve", type="primary") and src.strip():
         res = rewrite(src, opts)
         if res.failures:
             st.session_state.pop("last", None)
-            st.error("Rewrite failed: a model was unavailable or couldn't rewrite its part.")
+            st.error("Could not improve the text: a model was unavailable or couldn't improve its part.")
         else:
             st.session_state["last"] = (src, res)
     if "last" in st.session_state:
         src0, res = st.session_state["last"]
         st.subheader("Output")
-        st.text_area("Rewritten", res.text, height=260)
-        st.download_button("Download .txt", res.text, file_name="rewritten.txt")
-        st.markdown(f"**{len(res.changes)} changes · {change_ratio(src0, res.text):.0%} of words differ**")
+        st.text_area("Improved", res.text, height=260)
+        st.download_button("Download .txt", res.text, file_name="improved.txt")
+        st.markdown(f"**improved ({len(res.changes)}) · {change_ratio(src0, res.text):.0%} of words improved**")
         with st.expander("Diff", expanded=True):
             st.markdown(word_diff_html(src0, res.text), unsafe_allow_html=True)
-        with st.expander("Change log"):
+        with st.expander("Improvements"):
             st.dataframe([c.__dict__ for c in res.changes], width="stretch")
 
 with tab_docx:
     up = st.file_uploader("Upload .docx", type=["docx"])
     scrub = st.checkbox("Clear author/comments metadata", True)
-    if up and st.button("Rewrite document", type="primary"):
+    if up and st.button("Improve document", type="primary"):
         from rewriter.docx_io import rewrite_docx
 
         data, changes, failures = rewrite_docx(up.getvalue(), opts, scrub=scrub)
         if failures:
-            st.error("Rewrite failed: a model was unavailable or couldn't rewrite its part.")
+            st.error("Could not improve the text: a model was unavailable or couldn't improve its part.")
             st.stop()
-        st.success(f"{len(changes)} changes")
-        st.download_button("Download rewritten .docx", data, file_name=up.name.replace(".docx", ".rewritten.docx"))
+        st.success(f"improved ({len(changes)})")
+        st.download_button("Download improved .docx", data, file_name=up.name.replace(".docx", ".improved.docx"))
         st.dataframe([c.__dict__ for c in changes], width="stretch")
 
 with tab_check:

@@ -242,14 +242,14 @@ _CALLS = {
 def _extract(raw: str) -> str:
     m = re.search(r"<rewritten>\s*(.*?)\s*</rewritten>", raw, re.S)
     if not m:
-        raise LLMError("response missing <rewritten> tags")
+        raise LLMError("response missing the expected tags")
     return m.group(1).strip()
 
 
 def validate(original: str, rewritten: str) -> None:
     """Raise LLMError if the rewrite broke a hard constraint."""
     if not rewritten:
-        raise LLMError("empty rewrite")
+        raise LLMError("empty improvement")
     if Counter(PH_RE.findall(original)) != Counter(PH_RE.findall(rewritten)):
         raise LLMError("locked placeholders were dropped, duplicated or altered")
     a = len(original.split())
