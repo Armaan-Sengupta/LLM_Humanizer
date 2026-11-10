@@ -116,9 +116,14 @@ def _setup_web(r: _Report, app_dir: Path, bin_dir: Path, port: int) -> None:
         [str(venv / "bin" / "pip"), "install", "-q", *WEB_PACKAGES],
         [str(venv / "bin" / "python"), "-m", "spacy", "download", "en_core_web_sm"],
     ]
+    r.note(f"installing the web app's Python packages into {venv}; this usually takes a few minutes")
     for cmd in steps:
-        if subprocess.run(cmd, capture_output=True).returncode:
-            r.bad(f"installing the web app failed at: {' '.join(cmd[1:4])}")
+        try:
+            failed = subprocess.run(cmd, capture_output=True, timeout=1800).returncode != 0
+        except subprocess.TimeoutExpired:
+            failed = True
+        if failed:
+            r.bad(f"installing the web app failed at: {' '.join(cmd[1:4])} (check the network and rerun)")
             return
     r.ok(f"web app and its Python packages installed in {app_dir}")
 
@@ -162,6 +167,10 @@ WantedBy=default.target
 def run(web: bool = False, port: int = 8501, bin_dir: Path | None = None, app_dir: Path | None = None) -> int:
     bin_dir = bin_dir or Path(os.environ.get("BIN_DIR", Path.home() / ".local" / "bin"))
     app_dir = app_dir or Path(os.environ.get("APP_DIR", Path.home() / ".local" / "share" / "rewriter"))
+    try:
+        sys.stdout.reconfigure(line_buffering=True)  # show each step as it happens, even when piped to a log
+    except (AttributeError, ValueError):
+        pass
     linux = sys.platform.startswith("linux")
     if linux and os.geteuid() == 0:
         print("Run this as your normal user, not root: the CLIs' sign-ins live in that user's home.")
