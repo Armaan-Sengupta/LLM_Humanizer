@@ -14,7 +14,7 @@ from docx import Document
 from docx.oxml.ns import qn
 from lxml import etree
 
-from .pipeline import Change, Options, rewrite
+from .pipeline import Change, Options, Result, rewrite, rewrite_many
 
 TEXT_ONLY_CHILDREN = {qn("w:rPr"), qn("w:t"), qn("w:tab"), qn("w:br")}
 
@@ -80,6 +80,7 @@ def scrub_metadata(doc) -> None:
 
 
 def rewrite_docx(data: bytes, opts: Options, *, scrub: bool = True) -> tuple[bytes, list[Change], list[str]]:
+    """Return (document bytes, changes, failures). Failures are empty when every model call succeeded."""
     doc = Document(io.BytesIO(data))
     all_changes: list[Change] = []
     import dataclasses
@@ -98,13 +99,19 @@ def rewrite_docx(data: bytes, opts: Options, *, scrub: bool = True) -> tuple[byt
         seed = None if opts.seed is None else opts.seed * 100003 + n
         return rewrite(original, dataclasses.replace(opts, seed=seed, llm_workers=1))
 
-    workers = opts.llm_workers if opts.llm is not None else 1
-    with ThreadPoolExecutor(max_workers=max(1, workers)) as ex:
-        results = list(ex.map(work, enumerate(jobs, 1)))
+    failures: list[str] = []
+    if opts.rotation:
+        # One document-wide word count, so the windows carry across paragraphs.
+        texts, rotated, failures = rewrite_many([original for _, original in jobs], opts)
+        results = [Result(text, [], {}) for text in texts]
+        all_changes += rotated
+    else:
+        workers = opts.llm_workers if opts.llm is not None else 1
+        with ThreadPoolExecutor(max_workers=max(1, workers)) as ex:
+            results = list(ex.map(work, enumerate(jobs, 1)))
 
-    warnings: list[str] = []
     for (chunk, original), res in zip(jobs, results):
-        warnings += res.warnings
+        failures += res.failures
         if res.text == original:
             continue
         _set_run_text(chunk[0], res.text)
@@ -115,7 +122,7 @@ def rewrite_docx(data: bytes, opts: Options, *, scrub: bool = True) -> tuple[byt
         scrub_metadata(doc)
     out = io.BytesIO()
     doc.save(out)
-    return out.getvalue(), all_changes, sorted(set(warnings))
+    return out.getvalue(), all_changes, sorted(set(failures))
 
 
 def docx_text(data: bytes) -> str:

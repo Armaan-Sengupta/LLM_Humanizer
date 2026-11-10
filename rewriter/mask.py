@@ -61,8 +61,9 @@ class Masked:
 
 
 def mask(text: str, *, latex: bool = False, protected_terms: list[str] | None = None,
-         protect_quotes: bool = True) -> Masked:
-    m = Masked(text)
+         protect_quotes: bool = True, originals: list[str] | None = None) -> Masked:
+    """Mask protected spans. Pass a shared ``originals`` list to number tokens across calls."""
+    m = Masked(text, [] if originals is None else originals)
     patterns = (LATEX_PATTERNS if latex else []) + GENERAL_PATTERNS
     if not protect_quotes:
         patterns = [p for p in patterns if not p.startswith('[\\"“]')]
@@ -82,6 +83,22 @@ def mask(text: str, *, latex: bool = False, protected_terms: list[str] | None = 
         out = re.sub(pat, repl, out, flags=flags)
     m.text = out
     return m
+
+
+_MULTILINE_LATEX = LATEX_PATTERNS[:4]  # environments, $$...$$, \[...\], \(...\)
+
+
+def mask_multiline_latex(text: str, originals: list[str]) -> str:
+    """Lock LaTeX math and environments that span several lines, before text is split into lines."""
+    def repl(match: re.Match) -> str:
+        if "\n" not in match.group(0):
+            return match.group(0)  # single-line spans are masked later, line by line
+        originals.append(match.group(0))
+        return f"ZXQ{len(originals) - 1}QXZ"
+
+    for pat in _MULTILINE_LATEX:
+        text = re.sub(pat, repl, text)
+    return text
 
 
 def mask_latex_document(text: str) -> tuple[str, str, str]:

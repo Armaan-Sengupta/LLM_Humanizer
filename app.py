@@ -5,6 +5,7 @@ import streamlit as st
 
 from rewriter.checker import analyze, change_ratio, word_diff_html
 from rewriter.pipeline import Options, rewrite
+from rewriter.windows import DEFAULT_PATTERN, Phase, parse_pattern
 
 st.set_page_config(page_title="Local Rewriter", layout="wide")
 st.title("Local Rewriter")
@@ -23,16 +24,34 @@ with st.sidebar:
     llm_mode = st.selectbox("Stages 4-5 engine", ["auto (Claude Haiku if available)", "claude CLI", "Anthropic API", "off (local rules)"])
     swap_every = st.slider("LLM: one word swap per N words", 6, 25, 12)
     restructure_every = st.slider("LLM: restructure one sentence in N", 2, 8, 4)
+    st.divider()
+    use_rotation = st.checkbox("Rotate windows: unchanged, then Haiku, then Gemini", True)
+    _keep, _haiku, _gemini = parse_pattern(DEFAULT_PATTERN)
+    keep_words = st.number_input("Words left unchanged", min_value=0, value=_keep, step=10, disabled=not use_rotation)
+    haiku_words = st.number_input("Words reworded by Haiku", min_value=0, value=_haiku, step=10, disabled=not use_rotation)
+    gemini_words = st.number_input("Words reworded by Gemini", min_value=0, value=_gemini, step=10, disabled=not use_rotation)
 
 from rewriter.llm import LLMConfig
 
 _backend = {"auto": "auto", "claude": "cli", "Anthropic": "api"}.get(llm_mode.split()[0])
 llm_cfg = LLMConfig(backend=_backend, swap_every=swap_every, restructure_every=restructure_every) if _backend else None
 
+rotation = None
+if use_rotation and llm_cfg is None:
+    st.sidebar.warning("Window rotation needs an LLM engine, so it is off.")
+elif use_rotation and haiku_words + gemini_words == 0:
+    st.sidebar.warning("Give Haiku or Gemini some words to turn on window rotation.")
+elif use_rotation:
+    rotation = [
+        Phase(int(keep_words)),
+        Phase(int(haiku_words), llm_cfg, "haiku"),
+        Phase(int(gemini_words), LLMConfig(provider="gemini", swap_every=swap_every), "gemini"),
+    ]
+
 opts = Options(
     intensity=intensity, seed=int(seed) or None, phrases=phrases, synonyms=synonyms,
     structure=structure, latex=latex, protect_quotes=protect_quotes,
-    protected_terms=[t for t in protected.split(",") if t.strip()], llm=llm_cfg,
+    protected_terms=[t for t in protected.split(",") if t.strip()], llm=llm_cfg, rotation=rotation,
 )
 
 tab_text, tab_docx, tab_check = st.tabs(["Text", "Word (.docx)", "Checker"])
@@ -41,14 +60,16 @@ with tab_text:
     src = st.text_area("Input", height=260)
     if st.button("Rewrite", type="primary") and src.strip():
         res = rewrite(src, opts)
-        st.session_state["last"] = (src, res)
+        if res.failures:
+            st.session_state.pop("last", None)
+            st.error("Rewrite failed: a model was unavailable or couldn't rewrite its part.")
+        else:
+            st.session_state["last"] = (src, res)
     if "last" in st.session_state:
         src0, res = st.session_state["last"]
         st.subheader("Output")
         st.text_area("Rewritten", res.text, height=260)
         st.download_button("Download .txt", res.text, file_name="rewritten.txt")
-        for w in res.warnings:
-            st.warning(w)
         st.markdown(f"**{len(res.changes)} changes · {change_ratio(src0, res.text):.0%} of words differ**")
         with st.expander("Diff", expanded=True):
             st.markdown(word_diff_html(src0, res.text), unsafe_allow_html=True)
@@ -61,7 +82,10 @@ with tab_docx:
     if up and st.button("Rewrite document", type="primary"):
         from rewriter.docx_io import rewrite_docx
 
-        data, changes, _warn = rewrite_docx(up.getvalue(), opts, scrub=scrub)
+        data, changes, failures = rewrite_docx(up.getvalue(), opts, scrub=scrub)
+        if failures:
+            st.error("Rewrite failed: a model was unavailable or couldn't rewrite its part.")
+            st.stop()
         st.success(f"{len(changes)} changes")
         st.download_button("Download rewritten .docx", data, file_name=up.name.replace(".docx", ".rewritten.docx"))
         st.dataframe([c.__dict__ for c in changes], width="stretch")
