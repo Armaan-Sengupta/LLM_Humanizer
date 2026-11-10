@@ -1,5 +1,6 @@
 import os
 import stat
+import sys
 import textwrap
 
 import pytest
@@ -14,6 +15,10 @@ def _mock(tmp_path, body: str):
     p = tmp_path / "claude"
     p.write_text("#!/usr/bin/env python3\nimport sys, re\n" + textwrap.dedent(body))
     p.chmod(p.stat().st_mode | stat.S_IEXEC)
+    if sys.platform == "win32":  # Windows can't execute a shebang script directly
+        wrapper = tmp_path / "claude.cmd"
+        wrapper.write_text(f'@"{sys.executable}" "{p}" %*\n')
+        return str(wrapper)
     return str(p)
 
 
@@ -48,19 +53,30 @@ def test_prompt_counts():
 def test_llm_success_used(tmp_path):
     cfg = LLMConfig(backend="cli", model="haiku", claude_bin=_mock(tmp_path, GOOD))
     r = rewrite(TEXT, Options(seed=1, llm=cfg))
-    assert "reveals" in r.text and not r.warnings
+    assert "reveals" in r.text and r.ok
     assert "94.2%" in r.text and "(Smith et al., 2021)" in r.text
     assert any(c.stage == "llm" for c in r.changes)
 
 
-def test_llm_bad_output_falls_back(tmp_path):
+def test_llm_bad_output_is_a_failure(tmp_path):
     cfg = LLMConfig(backend="cli", model="haiku", claude_bin=_mock(tmp_path, DROP))
     r = rewrite(TEXT, Options(seed=1, llm=cfg))
     assert "94.2%" in r.text and "(Smith et al., 2021)" in r.text
-    assert r.warnings and "placeholders" in r.warnings[0]
+    assert not r.ok and "placeholders" in r.failures[0]
 
 
-def test_no_backend_warns(monkeypatch):
+def test_no_backend_is_a_failure(monkeypatch):
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
     r = rewrite(TEXT, Options(seed=1, llm=LLMConfig(claude_bin="definitely-not-installed-xyz")))
-    assert r.warnings and "unavailable" in r.warnings[0]
+    assert not r.ok and "unavailable" in r.failures[0]
+
+
+def test_offline_never_fails():
+    assert rewrite(TEXT, Options(seed=1)).ok
+
+
+def test_prompt_has_meaning_rules_and_gemini_extra():
+    haiku = build_prompt("one two three.", LLMConfig("cli", "haiku"))
+    gemini = build_prompt("one two three.", LLMConfig("cli", "g", provider="gemini"))
+    assert "hire is not pay" in haiku and "Be conservative" not in haiku
+    assert "Be conservative" in gemini

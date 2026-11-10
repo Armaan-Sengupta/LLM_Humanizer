@@ -3,3 +3,4 @@ build/
 dist/
 .buildenv/
 *.rewritten.*
+.venv/

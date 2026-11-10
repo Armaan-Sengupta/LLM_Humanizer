@@ -1,12 +1,13 @@
-"""Stages 4-5 (context-aware word substitution + sentence restructuring) via Claude Haiku.
+"""LLM rewriting with Claude Haiku and Gemini.
 
-Two backends:
-  * "cli": the `claude` command (Claude Code) in print mode, using your existing login
-  * "api": the Anthropic Messages API directly, using ANTHROPIC_API_KEY (stdlib only)
+Two backends for each provider:
+  * Claude: the `claude` command in print mode using your login, or the Anthropic API if
+    ANTHROPIC_API_KEY is set (stdlib only)
+  * Gemini: the `agy` (Antigravity) command in print mode, using your login
 
 The text sent is already masked: citations, numbers, quotes, formulas and protected terms
 are opaque placeholders (ZXQ0QXZ), so the model never sees or edits them. Every response is
-validated; if it fails twice the caller falls back to the local rule-based stages.
+validated and retried once; a second failure raises LLMError.
 """
 from __future__ import annotations
 
@@ -15,16 +16,20 @@ import os
 import re
 import shutil
 import subprocess
+import tempfile
+import time
 import urllib.error
 import urllib.request
 from collections import Counter
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from .mask import PH_RE
 
 DEFAULT_CLI_MODEL = "haiku"  # alias resolved by the claude CLI
 DEFAULT_API_MODEL = "claude-haiku-5-5"
 API_URL = os.environ.get("REWRITER_API_URL", "https://api.anthropic.com/v1/messages")
+DEFAULT_GEMINI_MODEL = "gemini-3.8-flash-low"  # as listed by `agy models`
+RATE_LIMIT_WAIT = 5  # seconds before retrying a 429 or 5xx response
 
 # Words the model must not introduce (the phrase bank just removed most of them)
 BANNED = ("delve, crucial, pivotal, leverage, robust, seamless, tapestry, realm, underscore, "
@@ -33,34 +38,71 @@ BANNED = ("delve, crucial, pivotal, leverage, robust, seamless, tapestry, realm,
 
 SYSTEM_PROMPT = """You are a meticulous copy editor. You rewrite one passage at a time and output only the rewritten passage. You never add, remove, or change facts, claims, hedges, numbers, or the author's position."""
 
-USER_TEMPLATE = """Rewrite the passage inside <passage> tags by following every rule below.
-
-WORD SUBSTITUTION
+_WORD_RULES = """WORD SUBSTITUTION
 - Replace about {n_swaps} words in total (roughly one in every {swap_every} words). Spread the replacements evenly across the passage; do not cluster them.
 - Each replacement must be a synonym or a short paraphrase that means exactly the same thing in this sentence. Read the whole sentence before choosing.
 - Prefer replacing verbs, adjectives and adverbs. Replace a noun only if it is an everyday word, not a term of art.
 - Use plain, common words. Never pick a rarer, fancier or more formal word than the original.
 - Keep grammatical agreement (tense, number, articles a/an) correct after each replacement.
 - Never replace: technical or domain terms, names, units, defined abbreviations, words inside a fixed expression, or any word whose synonym would shift the meaning even slightly.
+- Keep nouns that name people, groups, roles or organisations (for example residents, planners, departments) exactly as they are.
+- Keep each verb's exact action. Never swap in a verb that is broader, narrower or different (hire is not pay; report is not tell).{extra}"""
+
+# Per-provider additions to the word rules
+_EXTRA_RULES = {
+    "gemini": "\n- Be conservative: if you are not certain a replacement means exactly the same thing here, keep the original word.",
+}
+
+_LOCKED_AND_STYLE = """LOCKED TOKENS
+- Tokens of the form ZXQ<number>QXZ stand for citations, numbers, quotations, formulas and protected terms. Copy each one exactly, the same number of times, and keep it attached to the same claim, word or position in its sentence. Never translate, explain, merge or drop them.
+
+STYLE
+- Keep the same language, spelling variety (US/UK), tense, person, register and level of formality.
+- No markdown, no bullet points, no new line breaks, no commentary, no quotation marks around the output.
+- Do not use any of these words: {banned}."""
+
+USER_TEMPLATE = """Rewrite the passage inside <passage> tags by following every rule below.
+
+""" + _WORD_RULES + """
 
 SENTENCE STRUCTURE
 - Restructure {n_restructure} of the {n_sents} sentences (roughly one in every {restructure_every}). Choose from: move a subordinate clause or prepositional phrase to the other end of the sentence; split one long sentence into two; join two short, closely related sentences; switch active/passive voice when it reads naturally.
 - Aim for natural variation in sentence length. Leave the other sentences' structure as they are.
 - Keep sentence order and paragraph flow. Each sentence must still make the same claim with the same strength.
 
-LOCKED TOKENS
-- Tokens of the form ZXQ<number>QXZ stand for citations, numbers, quotations, formulas and protected terms. Copy each one exactly, the same number of times, and keep it attached to the same claim, word or position in its sentence. Never translate, explain, merge or drop them.
-
-STYLE
-- Keep the same language, spelling variety (US/UK), tense, person, register and level of formality.
-- No markdown, no bullet points, no new line breaks, no commentary, no quotation marks around the output.
-- Do not use any of these words: {banned}.
+""" + _LOCKED_AND_STYLE + """
 
 Output the rewritten passage inside <rewritten></rewritten> tags and nothing else.
 
 <passage>
 {passage}
 </passage>"""
+
+WINDOW_TEMPLATE = """Reword the passage inside <edit> tags so that it uses different words and keeps exactly the same meaning.
+
+CONTEXT
+- <before> and <after> hold the text around the passage. Read them to understand the passage. Do not reword them or include them in your output.
+
+""" + _WORD_RULES + """
+
+SENTENCE STRUCTURE
+- Only the words change. Keep every sentence, in the same order and with the same structure. Do not split, join or reorder sentences.
+
+""" + _LOCKED_AND_STYLE + """
+
+Output only the reworded passage inside <rewritten></rewritten> tags and nothing else.
+
+<before>
+{before}
+</before>
+
+<edit>
+{passage}
+</edit>
+
+<after>
+{after}
+</after>"""
 
 
 class LLMError(RuntimeError):
@@ -75,8 +117,14 @@ class LLMConfig:
     restructure_every: int = 4  # one restructured sentence per N sentences
     timeout: int = 120
     claude_bin: str = "claude"
+    provider: str = "claude"  # claude | gemini
+    gemini_bin: str = "agy"
 
     def resolve(self) -> "LLMConfig":
+        if self.provider == "gemini":
+            if not shutil.which(self.gemini_bin):
+                raise LLMError("no Gemini backend: install the `agy` CLI and sign in")
+            return replace(self, backend="cli", model=self.model or DEFAULT_GEMINI_MODEL)
         b = self.backend
         if b == "auto":
             if os.environ.get("ANTHROPIC_API_KEY"):
@@ -86,7 +134,7 @@ class LLMConfig:
             else:
                 raise LLMError("no LLM backend: set ANTHROPIC_API_KEY or install/log in to the `claude` CLI")
         model = self.model or (DEFAULT_API_MODEL if b == "api" else DEFAULT_CLI_MODEL)
-        return LLMConfig(b, model, self.swap_every, self.restructure_every, self.timeout, self.claude_bin)
+        return replace(self, backend=b, model=model)
 
 
 def _restructure_phrase(n_sents: int, every: int) -> str:
@@ -109,6 +157,20 @@ def build_prompt(passage: str, cfg: LLMConfig) -> str:
         n_restructure=_restructure_phrase(n_sents, cfg.restructure_every),
         restructure_every=cfg.restructure_every,
         banned=BANNED,
+        extra=_EXTRA_RULES.get(cfg.provider, ""),
+    )
+
+
+def build_window_prompt(passage: str, before: str, after: str, cfg: LLMConfig) -> str:
+    n_words = len(re.findall(r"[A-Za-z]+", passage))
+    return WINDOW_TEMPLATE.format(
+        passage=passage,
+        before=before or "(start of document)",
+        after=after or "(end of document)",
+        n_swaps=max(1, round(n_words / cfg.swap_every)),
+        swap_every=cfg.swap_every,
+        banned=BANNED,
+        extra=_EXTRA_RULES.get(cfg.provider, ""),
     )
 
 
@@ -116,7 +178,8 @@ def _call_cli(prompt: str, cfg: LLMConfig) -> str:
     cmd = [cfg.claude_bin, "-p", "--model", cfg.model, "--output-format", "text",
            "--system-prompt", SYSTEM_PROMPT, "--tools", "", "--no-session-persistence"]
     try:
-        p = subprocess.run(cmd, input=prompt, capture_output=True, text=True, timeout=cfg.timeout)
+        p = subprocess.run(cmd, input=prompt, capture_output=True, text=True, encoding="utf-8",
+                           errors="replace", timeout=cfg.timeout)
     except FileNotFoundError as e:
         raise LLMError(f"`{cfg.claude_bin}` not found") from e
     except subprocess.TimeoutExpired as e:
@@ -149,6 +212,33 @@ def _call_api(prompt: str, cfg: LLMConfig) -> str:
     return "".join(b.get("text", "") for b in data.get("content", []) if b.get("type") == "text")
 
 
+def _call_gemini_cli(prompt: str, cfg: LLMConfig) -> str:
+    exe = shutil.which(cfg.gemini_bin)
+    if not exe:
+        raise LLMError(f"`{cfg.gemini_bin}` not found")
+    cmd = [exe, "--print", f"{SYSTEM_PROMPT}\n\n{prompt}", "--model", cfg.model, "--mode", "plan",
+           "--output-format", "text", "--print-timeout", f"{cfg.timeout}s"]
+    # An empty working directory keeps project files out of the model's context. It is permanent
+    # because agy's background process keeps it open, which would break deleting a temporary one.
+    cwd = os.path.join(tempfile.gettempdir(), "rewriter-agy")
+    os.makedirs(cwd, exist_ok=True)
+    try:
+        p = subprocess.run(cmd, stdin=subprocess.DEVNULL, capture_output=True, text=True, encoding="utf-8",
+                           errors="replace", timeout=cfg.timeout + 15, cwd=cwd)
+    except subprocess.TimeoutExpired as e:
+        raise LLMError("agy CLI timed out") from e
+    if p.returncode != 0:
+        raise LLMError(f"agy CLI failed: {(p.stderr or p.stdout).strip()[:300]}")
+    return p.stdout
+
+
+_CALLS = {
+    ("claude", "api"): _call_api,
+    ("claude", "cli"): _call_cli,
+    ("gemini", "cli"): _call_gemini_cli,
+}
+
+
 def _extract(raw: str) -> str:
     m = re.search(r"<rewritten>\s*(.*?)\s*</rewritten>", raw, re.S)
     if not m:
@@ -168,23 +258,47 @@ def validate(original: str, rewritten: str) -> None:
         raise LLMError(f"length changed too much ({a} -> {b} words)")
     if "\n" in rewritten and "\n" not in original:
         raise LLMError("added line breaks")
-    if re.search(r"\*\*|^#|^- ", rewritten, re.M):
+    markdown = r"\*\*|^#|^- "
+    if re.search(markdown, rewritten, re.M) and not re.search(markdown, original, re.M):
         raise LLMError("added markdown")
 
 
-def llm_rewrite(masked_text: str, cfg: LLMConfig, retries: int = 1) -> str:
-    """Rewrite one masked paragraph. Raises LLMError if no valid rewrite was produced."""
-    cfg = cfg if cfg.backend in ("cli", "api") and cfg.model else cfg.resolve()
-    prompt = build_prompt(masked_text, cfg)
-    call = _call_api if cfg.backend == "api" else _call_cli
+def _generate(prompt: str, original: str, cfg: LLMConfig, retries: int, must_change: bool = False) -> str:
+    call = _CALLS[(cfg.provider, cfg.backend)]
     last: Exception | None = None
-    for _ in range(retries + 1):
+    for attempt in range(retries + 1):
         try:
             out = _extract(call(prompt, cfg))
-            validate(masked_text, out)
+            validate(original, out)
+            if must_change and out.split() == original.split():
+                raise _Unchanged("returned the passage unchanged")
             return out
         except LLMError as e:
             last = e
             if "not found" in str(e) or "not set" in str(e):
                 break
+            if attempt < retries and re.search(r"API error (429|5\d\d)", str(e)):
+                time.sleep(RATE_LIMIT_WAIT)
+    if isinstance(last, _Unchanged):
+        return original  # a valid reply that found nothing to change is not a failure
     raise LLMError(str(last))
+
+
+class _Unchanged(LLMError):
+    pass
+
+
+def _resolved(cfg: LLMConfig) -> LLMConfig:
+    return cfg if cfg.backend in ("cli", "api") and cfg.model else cfg.resolve()
+
+
+def llm_rewrite(masked_text: str, cfg: LLMConfig, retries: int = 1) -> str:
+    """Rewrite one masked paragraph. Raises LLMError if no valid rewrite was produced."""
+    cfg = _resolved(cfg)
+    return _generate(build_prompt(masked_text, cfg), masked_text, cfg, retries)
+
+
+def llm_reword(masked_span: str, before: str, after: str, cfg: LLMConfig, retries: int = 1) -> str:
+    """Swap words in one masked span, with the surrounding text as read-only context."""
+    cfg = _resolved(cfg)
+    return _generate(build_window_prompt(masked_span, before, after, cfg), masked_span, cfg, retries, must_change=True)

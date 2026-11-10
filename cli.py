@@ -9,15 +9,21 @@ Input can be literal text, a file path, or stdin:
     rewriter paper.tex                                     # LaTeX-aware
     cat essay.txt | rewriter                               # stdin -> stdout
     rewriter essay.txt --offline                           # never call an LLM
+    rewriter essay.txt --pattern 50,200,200                # keep 50 words, Haiku 200, Gemini 200, repeat
+    rewriter essay.txt --pattern off                       # per-paragraph Haiku + local rules instead
     rewriter -t "essay.txt"                                # force: treat as text, not a path
 
     rewriter check "some text"   |  rewriter check essay.txt
     rewriter compare original.txt rewritten.txt
+
+Exit status: 0 on success. 1 if a model was unavailable or couldn't rewrite its part; nothing
+is written in that case.
 """
 from __future__ import annotations
 
 import argparse
 import json
+import locale
 import sys
 from pathlib import Path
 
@@ -28,8 +34,14 @@ def _resolve(value: str | None, force_text: bool) -> tuple[str, Path | None]:
     """Return (text, path_or_None). Reads stdin when value is None or '-'."""
     if value is None or value == "-":
         if sys.stdin.isatty():
-            sys.exit("error: no input. Pass text, a file path, or pipe text on stdin.")
-        return sys.stdin.read(), None
+            end = "Ctrl+Z then Enter" if sys.platform == "win32" else "Ctrl+D"
+            print(f"Paste the text, then press {end} on a new line:", file=sys.stderr)
+            return sys.stdin.read(), None
+        data = sys.stdin.buffer.read()  # piped: decode ourselves so UTF-8 survives on Windows
+        try:
+            return data.decode("utf-8-sig"), None
+        except UnicodeDecodeError:
+            return data.decode(locale.getpreferredencoding(False), errors="replace"), None
     if not force_text:
         p = Path(value)
         try:
@@ -53,7 +65,20 @@ def _opts(a):
     if a.llm != "off":
         llm = LLMConfig(backend=a.llm, model=a.model, swap_every=a.swap_every,
                         restructure_every=a.restructure_every)
+    rotation = None
+    if llm is None and a.pattern not in (None, "off"):
+        sys.exit("error: --pattern needs the LLMs, so it can't be combined with --offline or --llm off")
+    if llm is not None and a.pattern != "off":
+        from rewriter.windows import DEFAULT_PATTERN, Phase, parse_pattern
+
+        try:
+            keep, haiku, gemini = parse_pattern(a.pattern or DEFAULT_PATTERN)
+        except ValueError as e:
+            sys.exit(f"error: {e}")
+        gemini_cfg = LLMConfig(provider="gemini", model=a.gemini_model, swap_every=a.swap_every)
+        rotation = [Phase(keep), Phase(haiku, llm, "haiku"), Phase(gemini, gemini_cfg, "gemini")]
     return Options(
+        rotation=rotation,
         intensity=a.intensity, seed=a.seed, synonyms=not a.no_synonyms,
         structure=not a.no_structure, phrases=not a.no_phrases,
         protected_terms=[t for t in (a.protect or "").split(",") if t.strip()],
@@ -72,28 +97,32 @@ def cmd_rewrite(a) -> None:
 
         if a.output == "-":
             sys.exit("error: .docx output can't go to stdout; use -o FILE.docx")
-        data, changes, warnings = rewrite_docx(path.read_bytes(), opts, scrub=not a.keep_metadata)
+        data, changes, failures = rewrite_docx(path.read_bytes(), opts, scrub=not a.keep_metadata)
+        if failures:
+            sys.exit(1)
         out = Path(a.output or path.with_name(path.stem + ".rewritten.docx"))
         out.write_bytes(data)
-        _report(changes, out, a.log, warnings)
+        _report(changes, out, a.log)
         return
 
     if path is not None and path.suffix.lower() == ".tex":
         opts.latex = True
     res = rewrite(text, opts)
+    if res.failures:
+        sys.exit(1)
     # literal text / stdin default to stdout; files default to <name>.rewritten.<ext>
     if a.output == "-" or (a.output is None and path is None):
+        if not sys.stdout.isatty():
+            sys.stdout.reconfigure(encoding="utf-8")  # piped output (e.g. to the clipboard) stays UTF-8
         sys.stdout.write(res.text if res.text.endswith("\n") else res.text + "\n")
-        _report(res.changes, None, a.log, res.warnings)
+        _report(res.changes, None, a.log)
     else:
         out = Path(a.output or path.with_name(path.stem + ".rewritten" + path.suffix))
         out.write_text(res.text, encoding="utf-8")
-        _report(res.changes, out, a.log, res.warnings)
+        _report(res.changes, out, a.log)
 
 
-def _report(changes, out, log: bool, warnings=()) -> None:
-    for w in warnings:
-        print(f"warning: {w}", file=sys.stderr)
+def _report(changes, out, log: bool) -> None:
     print(f"{len(changes)} changes" + (f" -> {out}" if out else ""), file=sys.stderr)
     if log:
         for c in changes:
@@ -149,6 +178,12 @@ def build_parser() -> argparse.ArgumentParser:
     g.add_argument("--restructure-every", type=int, default=4, metavar="N",
                    help="restructure about one sentence in N (default 4)")
     g.add_argument("--workers", type=int, default=4, help="parallel LLM calls (default 4)")
+    g.add_argument("--pattern", metavar="X,Y,Z",
+                   help="repeat across the document: leave X words unchanged, reword Y words with Haiku, "
+                        "reword Z words with Gemini (default 100,150,150). Windows end on sentence boundaries. "
+                        "Only the words change: the phrase bank, restructuring and local-rule fallback are off. "
+                        "Use 'off' for per-paragraph Haiku plus local rules")
+    g.add_argument("--gemini-model", help="Gemini model, as listed by `agy models` (default gemini-3.8-flash-low)")
     r.set_defaults(fn=cmd_rewrite)
 
     c = sub.add_parser("check", help="local diagnostics: ZipPy, AI-marker density, burstiness")
